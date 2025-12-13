@@ -1,0 +1,32 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+  - general
+description: |
+  Podinfo is a tiny web application made with Go that showcases best practices
+  of running microservices in Kubernetes. It is commonly used for testing and
+  demonstrating Kubernetes features such as service mesh, GitOps workflows,
+  progressive delivery, and observability.
+displayName: Podinfo
+icon: https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  Podinfo is a microservice template for Kubernetes, written in Go. It provides
+  features including:
+  - Health checks (readiness and liveness)
+  - Graceful shutdown on interrupt signals
+  - Prometheus metrics and Grafana dashboards
+  - OpenAPI v3 documentation
+  - Multi-arch container image (AMD64/ARM64)
+  - Container image signature verification with Sigstore cosign
+  - Structured logging with zap logger
+  - 12-factor app compliance
+  - Fault injection (random errors and latency)
+  - Swagger UI for API documentation
+scope:
+  - project
+supportLink: https://github.com/stefanprodan/podinfo
+---
+
