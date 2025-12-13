@@ -92,4 +92,27 @@ NOTE: somehow following is giving error
 deepak.muley:dm-nkp-gitops-app-catalog/ (main✗) $ docker pull ghcr.io/deepak-muley/nkp-custom-apps-catalog/dm-nkp-gitops-app-catalog/collection:v0.1.0           [11:12:49]
 v0.1.0: Pulling from deepak-muley/nkp-custom-apps-catalog/dm-nkp-gitops-app-catalog/collection
 failed to unpack image on snapshotter overlayfs: mismatched image rootfs and manifest layers
+--------
+
+Create a catalog collection in your NKP mgmt Cluster
+
+[dm-nkp-mgmt-1-admin@dm-nkp-mgmt-1|default] deepak.muley:nkp/ $ nkp create catalog-collection --url oci://ghcr.io/deepak-muley/nkp-custom-apps-catalog/dm-nkp-gitops-app-catalog/collection --workspace dm-dev-workspace --tag v0.1.0 --dry-run -oyaml
+---
+<pre>
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  creationTimestamp: null
+  labels:
+    catalog.nkp.nutanix.com/catalog-source-artifact: "true"
+  name: dm-nkp-gitops-app-catalog-collection
+  namespace: dm-dev-workspace
+spec:
+  interval: 6h0m0s
+  ref:
+    tag: v0.1.0
+  timeout: 1m0s
+  url: oci://ghcr.io/deepak-muley/nkp-custom-apps-catalog/dm-nkp-gitops-app-catalog/collection
+status: {}
+</pre>
 </pre>
