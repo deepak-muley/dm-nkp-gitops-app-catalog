@@ -1,0 +1,32 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - security
+description: |
+  Kubescape is an open-source Kubernetes security platform that provides
+  comprehensive security coverage from development to runtime. It scans
+  clusters, YAML files, and Helm charts for security vulnerabilities and
+  misconfigurations.
+displayName: Kubescape
+icon: https://raw.githubusercontent.com/kubescape/kubescape/master/docs/img/kubescape-logo.png
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  Kubescape is an end-to-end Kubernetes security platform that provides:
+  - Risk analysis based on multiple frameworks (NSA-CISA, MITRE ATT&CK, CIS)
+  - Software Bill of Materials (SBOM) generation
+  - Container image vulnerability scanning
+  - Runtime threat detection
+  - Network policy generation
+  - RBAC analysis and visualization
+  - CI/CD pipeline integration
+  - IDE extensions for shift-left security
+  - Compliance and misconfiguration scanning
+  - Container registry scanning
+  - Host scanning for vulnerabilities
+scope:
+  - workspace
+supportLink: https://github.com/kubescape/kubescape
+---
+

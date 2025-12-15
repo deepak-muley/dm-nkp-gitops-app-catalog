@@ -1,0 +1,30 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - security
+description: |
+  Kyverno is a policy engine designed for Kubernetes. It allows cluster
+  administrators to manage and enforce policies for security, compliance,
+  and governance without writing code.
+displayName: Kyverno
+icon: https://kyverno.io/images/kyverno-logo.png
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  Kyverno is a Kubernetes Native Policy Management solution that provides:
+  - Policy as Kubernetes resources (no new language to learn)
+  - Validate, mutate, generate, and cleanup configurations
+  - Block non-compliant resources using admission control
+  - Report policy violations without blocking
+  - Generate default configurations for resources
+  - Image signature and attestation verification
+  - Background scanning for policy compliance
+  - API call-based context data in policies
+  - JMESPath support for complex conditions
+  - Test policies using the Kyverno CLI
+scope:
+  - workspace
+supportLink: https://github.com/kyverno/kyverno
+---
+
