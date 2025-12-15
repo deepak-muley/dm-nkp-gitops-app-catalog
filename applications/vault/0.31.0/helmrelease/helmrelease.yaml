@@ -1,11 +1,13 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
-  name: ${releaseName}-vaultrepo
+  name: ${releaseName}-chart
   namespace: ${releaseNamespace}
 spec:
   interval: 6h0m0s
-  url: https://helm.releases.hashicorp.com
+  ref:
+    tag: 0.31.0
+  url: oci://ghcr.io/deepak-muley/vault/vault
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -13,14 +15,10 @@ metadata:
   name: vault
   namespace: ${releaseNamespace}
 spec:
-  chart:
-    spec:
-      chart: vault
-      version: 0.31.0
-      sourceRef:
-        kind: HelmRepository
-        name: ${releaseName}-vaultrepo
-        namespace: ${releaseNamespace}
+  chartRef:
+    kind: OCIRepository
+    name: ${releaseName}-chart
+    namespace: ${releaseNamespace}
   install:
     crds: CreateReplace
     createNamespace: true

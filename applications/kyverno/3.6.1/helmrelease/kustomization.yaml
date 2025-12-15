@@ -4,4 +4,3 @@ resources:
 - cm.yaml
 - helmrelease.yaml
 ---
-

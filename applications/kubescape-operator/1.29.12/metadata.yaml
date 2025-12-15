@@ -1,0 +1,18 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+  - general
+description: |
+  Kubescape Operator is a tool for managing Kubescape. It is commonly used for managing Kubescape resources.
+displayName: Vault
+icon: https://raw.githubusercontent.com/kubescape/kubescape-operator/main/website/static/img/kubescape-operator-symbol.svg
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  Kubescape Operator is a tool for managing Kubescape. It is commonly used for managing Kubescape resources.
+scope:
+  - project
+supportLink: https://github.com/kubescape/kubescape-operator
+---
+

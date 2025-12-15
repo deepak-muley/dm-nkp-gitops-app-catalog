@@ -1,26 +1,24 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
-  name: ${releaseName}-kubescaperepo
+  name: ${releaseName}-chart
   namespace: ${releaseNamespace}
 spec:
   interval: 6h0m0s
-  url: https://kubescape.github.io/helm-charts/
+  ref:
+    tag: 1.29.12
+  url: oci://ghcr.io/deepak-muley/kubescape-operator/kubescape-operator
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: kubescape
+  name: kubescape-operator
   namespace: ${releaseNamespace}
 spec:
-  chart:
-    spec:
-      chart: kubescape-operator
-      version: 1.29.12
-      sourceRef:
-        kind: HelmRepository
-        name: ${releaseName}-kubescaperepo
-        namespace: ${releaseNamespace}
+  chartRef:
+    kind: OCIRepository
+    name: ${releaseName}-chart
+    namespace: ${releaseNamespace}
   install:
     crds: CreateReplace
     createNamespace: true

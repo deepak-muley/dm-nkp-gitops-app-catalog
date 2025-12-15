@@ -1,30 +1,18 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
 allowMultipleInstances: true
 category:
-  - security
+  - general
 description: |
-  HashiCorp Vault is an identity-based secrets and encryption management system.
-  It provides secrets management, encryption services, and privileged access management
-  to secure applications, data, and infrastructure in cloud environments.
+  Vault is a tool for managing secrets. It is commonly used for storing and retrieving secrets.
 displayName: Vault
-icon: https://www.datocms-assets.com/2885/1620159869-brandvaultprimaryattributedcolor.svg
+icon: https://raw.githubusercontent.com/hashicorp/vault/main/website/static/img/vault-symbol.svg
 licensing:
   - Pro
   - Ultimate
 overview: |
-  HashiCorp Vault provides a unified workflow to securely access secrets and sensitive
-  data. It features:
-  - Secret storage and management with versioning
-  - Dynamic secrets generation for databases, cloud providers, and more
-  - Data encryption (encryption as a service)
-  - Identity-based access control
-  - Leasing and renewal of secrets
-  - Revocation of secrets
-  - Audit logging
-  - High availability with integrated storage backend
-  - Support for multiple authentication methods (LDAP, OIDC, Kubernetes, etc.)
+  Vault is a tool for managing secrets. It is commonly used for storing and retrieving secrets.
 scope:
-  - workspace
+  - project
 supportLink: https://github.com/hashicorp/vault
 ---
 
