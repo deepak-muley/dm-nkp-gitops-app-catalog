@@ -108,6 +108,41 @@ deepak.muley:dm-nkp-gitops-app-catalog/ (main✗) $ oras discover ghcr.io/deepak
 ghcr.io/deepak-muley/nkp-custom-apps-catalog/dm-nkp-gitops-app-catalog/collection@sha256:c36861d4a1378f081cafa6b70ef25a83ecdbb994de149d0d3c8c0086b1defaf0
 </pre>
 
+## Automated Build and Push Script
+
+Use the `build-and-push.sh` script to automate validation, bundle creation, and pushing:
+
+### Setup Credentials
+
+First, set up your credentials as environment variables. You can use the helper script:
+
+<pre>
+cp setup-credentials.sh.example setup-credentials.sh
+# Edit setup-credentials.sh with your credentials
+source setup-credentials.sh
+</pre>
+
+Or export manually:
+<pre>
+export GHCR_USERNAME=deepak-muley
+export GHCR_PASSWORD=your-github-pat
+export MAKE_PUBLIC=false  # Set to "true" to make package public after pushing
+</pre>
+
+### Run the Script
+
+<pre>
+./build-and-push.sh v0.1.0
+</pre>
+
+The script will:
+1. Validate the catalog repository
+2. Create the catalog bundle with the specified tag
+3. Push the bundle to GitHub Container Registry
+4. Optionally make the package public (if MAKE_PUBLIC=true)
+
+**Note:** Credentials are stored in `setup-credentials.sh` which is excluded from git via `.gitignore`. Never commit credentials to the repository.
+
 Now import catalog bundle by creating a catalog collection in your NKP mgmt Cluster
 <pre>
 [dm-nkp-mgmt-1-admin@dm-nkp-mgmt-1|default] deepak.muley:nkp/ $ nkp create catalog-collection --url oci://ghcr.io/deepak-muley/nkp-custom-apps-catalog/dm-nkp-gitops-app-catalog/collection --workspace dm-dev-workspace --tag v0.1.0 --dry-run -oyaml

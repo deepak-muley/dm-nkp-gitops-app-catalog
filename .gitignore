@@ -1,0 +1,25 @@
+# Credentials and secrets
+*.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.token
+*.secret
+setup-credentials.sh
+
+# Bundle files
+*.tar
+*.tgz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
