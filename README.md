@@ -1,10 +1,13 @@
 # dm-nkp-gitops-app-catalog
 
 ## Doc references
-https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-custom-apps-c.html
-https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-partner-catalog-in-nkp-c.html
-https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-workspace-app-metadata-c.html
+- https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-custom-apps-c.html
 
+- https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-partner-catalog-in-nkp-c.html
+
+- https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-workspace-app-metadata-c.html
+
+In a fresh dir
 <pre>
 deepak.muley:dm-nkp-gitops-app-catalog/ (main) $ ls
 README.md
@@ -162,6 +165,5 @@ nkp generate catalog-repository --apps=vault=0.31.0
 
 kyverno
 <pre>
-
 nkp generate catalog-repository --apps=kyverno=3.6.1
 </pre>

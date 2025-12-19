@@ -1,5 +1,5 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
-allowMultipleInstances: true
+allowMultipleInstances: false
 category:
   - general
 description: |
@@ -12,7 +12,7 @@ licensing:
 overview: |
   Kyverno is a policy engine for Kubernetes. It is commonly used for managing policies for Kubernetes resources.
 scope:
-  - project
+  - workspace
 supportLink: https://github.com/kyverno/kyverno
 ---
 

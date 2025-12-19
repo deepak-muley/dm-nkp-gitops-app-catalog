@@ -1,5 +1,5 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
-allowMultipleInstances: true
+allowMultipleInstances: false
 category:
   - general
 description: |
@@ -12,7 +12,7 @@ licensing:
 overview: |
   Vault is a tool for managing secrets. It is commonly used for storing and retrieving secrets.
 scope:
-  - project
+  - workspace
 supportLink: https://github.com/hashicorp/vault
 ---
 
