@@ -95,7 +95,7 @@ deepak.muley:dm-nkp-gitops-app-catalog/ (main✗) $ nkp push bundle --bundle /Us
  ✓ Parsing image bundle config
  ✓ Starting temporary Docker registry
  ✓ Pushing bundled images [====================================>2/2] (time elapsed 04s)
-<pre>
+</pre>
 
 Verify if artifacts are pushed
 
