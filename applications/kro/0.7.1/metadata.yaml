@@ -1,0 +1,18 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - general
+description: |
+  Kro is a tool for managing Kro resources.
+displayName: kro
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  Kro is a tool for managing Kro resources.
+scope:
+  - workspace
+supportLink: https://github.com/kro/kro
+---
+
