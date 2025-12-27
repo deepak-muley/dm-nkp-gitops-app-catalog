@@ -263,7 +263,15 @@ Digest: sha256:429c80859a13f207e489b82efceb48830a43bba2ea1879d0dd1512f6ccf60e94
      272
 ```
 
-ref: 
+ref: https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog/blob/release-2.x/applications/envoy-gateway/1.5.0/helmrelease/envoy-gateway.yaml
+```bash
+helm show values oci://docker.io/envoyproxy/gateway-helm | wc -l
+Pulled: docker.io/envoyproxy/gateway-helm:1.6.1
+Digest: sha256:a89ce554ad10b951e521ac543687ce41616932b2b614121eeffda4c174d2c9dc
+     145
+```
+
+ref: https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog/blob/release-2.x/applications/kserve/0.15.0/helmrelease/kserve.yaml
 ```bash
 helm show values oci://ghcr.io/kserve/charts/kserve-crd     
 Error: unable to locate any tags in provided repository: oci://ghcr.io/kserve/charts/kserve-crd
