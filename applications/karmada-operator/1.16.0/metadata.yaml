@@ -1,0 +1,18 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - general
+description: |
+  Karmada Operator is a tool for managing Karmada. It is commonly used for managing Karmada resources.
+displayName: Karmada Operator
+icon: https://raw.githubusercontent.com/karmada/karmada/main/website/static/img/karmada-operator-symbol.svg
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  Karmada Operator is a tool for managing Karmada. It is commonly used for managing Karmada resources.
+scope:
+  - workspace
+supportLink: https://github.com/karmada-operator/karmada-operator
+---
+

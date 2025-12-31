@@ -187,6 +187,15 @@ helm pull hashicorp/vault
 helm push vault-0.31.0.tgz oci://ghcr.io/deepak-muley/vault
 </pre>
 
+<pre>
+helm repo add karmada-charts https://raw.githubusercontent.com/karmada-io/karmada/master/charts
+helm repo update karmada-charts
+helm search repo karmada-charts/karmada --versions
+helm search repo karmada-charts/karmada-operator --versions
+helm pull karmada-charts/karmada-operator
+helm push karmada-operator-chart-v1.16.0.tgz oci://ghcr.io/deepak-muley/karmada-operator
+</pre>
+
 Commands to add appliction structure for
 kubescape
 <pre>
