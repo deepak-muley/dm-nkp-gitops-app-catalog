@@ -1,0 +1,17 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+- general
+description: |
+  dm-nkp-gitops-custom-app is a tool for managing dm-nkp-gitops-custom-app. It is commonly used for managing dm-nkp-gitops-custom-app resources.
+displayName: dm-nkp-gitops-custom-app
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  dm-nkp-gitops-custom-app is a tool for managing dm-nkp-gitops-custom-app. It is commonly used for managing dm-nkp-gitops-custom-app resources.
+scope:
+- project
+supportLink: https://github.com/dm-nkp-gitops-custom-app/dm-nkp-gitops-custom-app
+---
