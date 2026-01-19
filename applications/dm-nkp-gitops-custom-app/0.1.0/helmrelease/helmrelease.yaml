@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 6h0m0s
   ref:
-    tag: "0.1.0_sha-960eb32"
+    tag: "0.1.0_sha-97113ef"
   url: oci://ghcr.io/deepak-muley/dm-nkp-gitops-custom-app/prod/dm-nkp-gitops-custom-app-chart/dm-nkp-gitops-custom-app
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
