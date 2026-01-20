@@ -1,0 +1,78 @@
+apiVersion: v1
+data:
+  values.yaml: |
+    # Deployment configuration
+    deployment:
+      enabled: true
+      replicas: 1
+    
+    # Install CRDs (IngressRoute, Middleware, etc.)
+    ingressClass:
+      enabled: true
+      isDefaultClass: true
+    
+    # Entrypoints configuration
+    ports:
+      web:
+        port: 8000
+        expose:
+          default: true
+        exposedPort: 80
+        protocol: TCP
+      websecure:
+        port: 8443
+        expose:
+          default: true
+        exposedPort: 443
+        protocol: TCP
+        tls:
+          enabled: true
+    
+    # Service configuration
+    service:
+      enabled: true
+      type: LoadBalancer
+      annotations: {}
+    
+    # Enable access logs
+    logs:
+      general:
+        level: INFO
+      access:
+        enabled: true
+    
+    # Prometheus metrics
+    metrics:
+      prometheus:
+        entryPoint: metrics
+        addEntryPointsLabels: true
+        addServicesLabels: true
+    
+    # Dashboard (disabled by default for security)
+    ingressRoute:
+      dashboard:
+        enabled: false
+    
+    # Providers
+    providers:
+      kubernetesCRD:
+        enabled: true
+        allowCrossNamespace: true
+      kubernetesIngress:
+        enabled: true
+        publishedService:
+          enabled: true
+    
+    # Resource limits
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+kind: ConfigMap
+metadata:
+  name: ${releaseName}-config-defaults
+  namespace: ${releaseNamespace}
+---

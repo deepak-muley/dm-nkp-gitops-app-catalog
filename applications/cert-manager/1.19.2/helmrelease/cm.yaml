@@ -1,0 +1,47 @@
+apiVersion: v1
+data:
+  values.yaml: |
+    # Install CRDs
+    crds:
+      enabled: true
+      keep: true
+    
+    # Global settings
+    global:
+      leaderElection:
+        namespace: cert-manager
+    
+    # Replicas for HA
+    replicaCount: 1
+    
+    # Webhook configuration
+    webhook:
+      replicaCount: 1
+      timeoutSeconds: 30
+    
+    # CA Injector configuration
+    cainjector:
+      enabled: true
+      replicaCount: 1
+    
+    # Prometheus metrics
+    prometheus:
+      enabled: true
+      servicemonitor:
+        enabled: true
+        labels:
+          release: kube-prometheus-stack
+    
+    # Resource limits
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+kind: ConfigMap
+metadata:
+  name: ${releaseName}-config-defaults
+  namespace: ${releaseNamespace}
+---

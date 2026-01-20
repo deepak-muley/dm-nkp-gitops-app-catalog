@@ -1,5 +1,194 @@
 # dm-nkp-gitops-app-catalog
 
+## Applications in this Catalog
+
+### Infrastructure Applications
+
+| Application | Version | Category | Description |
+|-------------|---------|----------|-------------|
+| cert-manager | 1.19.2 | security, certificates | Certificate management controller |
+| letsencrypt-clusterissuer | 1.0.0 | security, certificates | Let's Encrypt ACME ClusterIssuers |
+| traefik | 38.0.2 | networking, ingress | Cloud-native edge router and ingress controller |
+
+### Observability Stack (Latest Versions)
+
+| Application | Version | Category | Description |
+|-------------|---------|----------|-------------|
+| kube-prometheus-stack | 80.13.3 | observability, monitoring | Prometheus + Grafana + Alertmanager monitoring stack |
+| loki | 6.46.0 | observability, logging | Log aggregation system with OTLP support |
+| tempo | 1.21.1 | observability, tracing | Distributed tracing backend |
+| **opentelemetry-operator** | 0.140.0 | observability, operators | **Recommended** - Manages OTel Collectors via CRDs |
+| opentelemetry-collector | 0.140.1 | observability, monitoring | Alternative - Standalone collector deployment |
+
+### Demo Applications
+
+| Application | Version | Category | Description |
+|-------------|---------|----------|-------------|
+| dm-nkp-gitops-custom-app | 0.1.0 | observability, demo | Demo app with OpenTelemetry telemetry (metrics, logs, traces) |
+| podinfo | 6.9.4 | general | Demo/test application |
+
+### Security Applications
+
+| Application | Version | Category | Description |
+|-------------|---------|----------|-------------|
+| kyverno | 3.6.1 | security | Policy engine for Kubernetes |
+| kubescape-operator | 1.29.12 | security | Security scanning and compliance |
+| vault | 0.31.0 | security | Secrets management |
+| oauth2-proxy | 8.0.2 | security | OAuth2 authentication proxy |
+
+### Multi-Cluster & Platform
+
+| Application | Version | Category | Description |
+|-------------|---------|----------|-------------|
+| karmada-operator | 1.16.0 | multi-cluster | Multi-cluster management |
+| kro | 0.7.1 | general | Kubernetes Resource Orchestrator |
+
+## Full Stack Architecture for dm-nkp-gitops-custom-app
+
+The `dm-nkp-gitops-custom-app` can be deployed with the complete infrastructure stack:
+
+```
+                              ┌─────────────────────────────────┐
+                              │          Internet               │
+                              └───────────────┬─────────────────┘
+                                              │
+                              ┌───────────────▼─────────────────┐
+                              │     cert-manager (1.19.2)       │
+                              │  + letsencrypt-clusterissuer    │
+                              │    (TLS Certificate Automation) │
+                              └───────────────┬─────────────────┘
+                                              │
+                              ┌───────────────▼─────────────────┐
+                              │      Traefik (38.0.2)           │
+                              │    (Ingress Controller)         │
+                              │  - TLS termination              │
+                              │  - Automatic HTTPS              │
+                              └───────────────┬─────────────────┘
+                                              │
+┌─────────────────────────────────────────────▼─────────────────────────────────────────────┐
+│                              dm-nkp-gitops-custom-app (0.1.0)                             │
+│                          (exports metrics, logs, traces via OTLP)                         │
+└─────────────────────────────────────────────┬─────────────────────────────────────────────┘
+                                              │ OTLP (gRPC :4317)
+                                              ▼
+┌───────────────────────────────────────────────────────────────────────────────────────────┐
+│                    OpenTelemetry Operator (0.140.0) + Collector CR                        │
+│              (manages collector via OpenTelemetryCollector CRD named "otel")              │
+│                                                                                           │
+│   ┌───────────────────────────────────────────────────────────────────────────────────┐   │
+│   │                    otel-collector (deployed by operator)                          │   │
+│   │                  (receives, processes, exports telemetry)                         │   │
+│   └───────────────────────────────────────────────────────────────────────────────────┘   │
+└─────────────┬───────────────────────────────┬───────────────────────────────┬─────────────┘
+              │ Prometheus                    │ OTLP                          │ OTLP
+              │ Remote Write                  │ HTTP                          │ gRPC
+              ▼                               ▼                               ▼
+┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
+│  kube-prometheus-stack  │     │     Loki (6.46.0)       │     │    Tempo (1.21.1)       │
+│       (80.13.3)         │     │                         │     │                         │
+│  (Prometheus + Grafana) │     │    (Logs storage)       │     │   (Traces storage)      │
+└───────────┬─────────────┘     └───────────┬─────────────┘     └───────────┬─────────────┘
+            │                               │                               │
+            └───────────────────────────────┼───────────────────────────────┘
+                                            │
+                                            ▼
+                            ┌───────────────────────────────────┐
+                            │      Grafana (included in         │
+                            │    kube-prometheus-stack)         │
+                            │   - Metrics dashboards            │
+                            │   - Logs exploration              │
+                            │   - Trace visualization           │
+                            │   - Trace-to-logs correlation     │
+                            └───────────────────────────────────┘
+```
+
+### Deployment Order
+
+Deploy the full stack in this order:
+
+#### Phase 1: Infrastructure (Required for Operator)
+1. **cert-manager** - Certificate management controller (required for operator webhooks)
+2. **letsencrypt-clusterissuer** - Let's Encrypt staging & production issuers (optional)
+3. **traefik** - Ingress controller with TLS support (optional)
+
+#### Phase 2: Observability Storage Backends (Required)
+4. **kube-prometheus-stack** - Prometheus for metrics, Grafana for visualization
+5. **loki** - Log aggregation with OTLP support
+6. **tempo** - Distributed tracing backend
+
+#### Phase 3: Telemetry Collection (Choose One)
+7. **opentelemetry-operator** (Recommended for NKP) - Manages collectors via CRDs
+   - After operator is running, apply the `OpenTelemetryCollector` CR named "otel"
+   - This creates a service `otel-collector:4317` that the app connects to
+
+   OR
+
+7. **opentelemetry-collector** (Alternative) - Standalone collector deployment
+
+#### Phase 4: Application
+8. **dm-nkp-gitops-custom-app** - The demo application
+
+### Quick Deploy Commands
+
+```bash
+# Infrastructure (cert-manager required for operator)
+./add-application.sh --appname cert-manager --version 1.19.2 --ocirepo oci://quay.io/jetstack/charts/cert-manager
+./add-application.sh --appname traefik --version 38.0.2 --ocirepo oci://ghcr.io/traefik/helm/traefik
+
+# Observability Storage Backends
+./add-application.sh --appname kube-prometheus-stack --version 80.13.3 --ocirepo oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+./add-application.sh --appname loki --version 6.46.0 --ocirepo oci://ghcr.io/grafana/helm-charts/loki
+./add-application.sh --appname tempo --version 1.21.1 --ocirepo oci://ghcr.io/grafana/helm-charts/tempo
+
+# Option A: OpenTelemetry Operator (RECOMMENDED for NKP)
+./add-application.sh --appname opentelemetry-operator --version 0.140.0 --ocirepo oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-operator
+# Then apply the OpenTelemetryCollector CR:
+# kubectl apply -f applications/opentelemetry-operator/0.140.0/helmrelease/otel-collector-cr.yaml
+
+# Option B: Standalone OpenTelemetry Collector (alternative)
+./add-application.sh --appname opentelemetry-collector --version 0.140.1 --ocirepo oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-collector
+```
+
+### OpenTelemetry Operator vs Collector
+
+| Feature | opentelemetry-operator | opentelemetry-collector |
+|---------|------------------------|-------------------------|
+| Deployment | Via `OpenTelemetryCollector` CRD | Direct Helm deployment |
+| Management | Kubernetes-native, declarative | Helm values configuration |
+| Auto-instrumentation | Supported (Java, Node, Python, .NET, Go) | Not supported |
+| Multiple collectors | Easy via multiple CRs | Requires multiple Helm releases |
+| NKP Integration | Recommended (matches [nkp-nutanix-product-catalog](https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog)) | Works but less integrated |
+| cert-manager | Required for webhooks | Not required |
+
+### dm-nkp-gitops-custom-app Compatibility
+
+The [dm-nkp-gitops-custom-app](https://github.com/deepak-muley/dm-nkp-gitops-custom-app) connects to `otel-collector:4317` for OTLP telemetry export.
+
+**With opentelemetry-operator:**
+- The included `OpenTelemetryCollector` CR is named `otel`
+- The operator creates a service named `otel-collector` (pattern: `<name>-collector`)
+- This matches what the app expects - **fully compatible**
+
+**With opentelemetry-collector:**
+- The Helm chart creates a service named `opentelemetry-collector`
+- You may need to update the app's `OTEL_EXPORTER_OTLP_ENDPOINT` to `opentelemetry-collector:4317`
+- OR rename the Helm release to `otel` so the service becomes `otel-collector`
+
+### Let's Encrypt Configuration
+
+After deploying cert-manager and letsencrypt-clusterissuer, update the ACME email in:
+`applications/letsencrypt-clusterissuer/1.0.0/helmrelease/clusterissuers.yaml`
+
+Two ClusterIssuers are provided:
+- `letsencrypt-staging` - For testing (certificates not trusted by browsers)
+- `letsencrypt-prod` - For production (trusted certificates)
+
+Example Ingress annotation for automatic certificates:
+```yaml
+annotations:
+  cert-manager.io/cluster-issuer: "letsencrypt-prod"
+```
+
 ## Doc references
 - https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Kubernetes-Platform-v2_16:top-custom-apps-c.html
 

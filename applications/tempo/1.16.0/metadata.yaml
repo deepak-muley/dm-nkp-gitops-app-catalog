@@ -1,0 +1,24 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+- observability
+- tracing
+description: |
+  Grafana Tempo is an open source, easy-to-use, high-scale distributed tracing backend.
+  Tempo is cost-efficient, requiring only object storage to operate, and is deeply 
+  integrated with Grafana, Prometheus, and Loki. It supports OTLP, Jaeger, and Zipkin 
+  trace formats.
+displayName: Tempo
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  Tempo is a distributed tracing backend that stores traces from OpenTelemetry Collector.
+  It integrates with Grafana for trace visualization and supports trace-to-logs and 
+  trace-to-metrics correlation with Loki and Prometheus.
+scope:
+- workspace
+- project
+supportLink: https://github.com/grafana/tempo
+---

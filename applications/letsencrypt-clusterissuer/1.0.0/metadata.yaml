@@ -1,0 +1,31 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+- security
+- certificates
+- infrastructure
+dependencies:
+- name: cert-manager
+  version: ">=1.19.2"
+  description: Certificate management controller required for ClusterIssuers
+  required: true
+description: |
+  Let's Encrypt ClusterIssuer configurations for cert-manager. Provides both staging and 
+  production ACME issuers for automated TLS certificate provisioning using Let's Encrypt.
+  
+  Includes:
+  - letsencrypt-staging: For testing (not trusted by browsers)
+  - letsencrypt-prod: For production use (trusted certificates)
+displayName: Let's Encrypt ClusterIssuer
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  Pre-configured ClusterIssuer resources for Let's Encrypt certificate automation.
+  Deploy this after cert-manager to enable automatic TLS certificate provisioning
+  for your ingress resources using ACME HTTP-01 challenge.
+scope:
+- workspace
+supportLink: https://cert-manager.io/docs/configuration/acme/
+---

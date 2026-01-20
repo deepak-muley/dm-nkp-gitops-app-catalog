@@ -1,0 +1,24 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+- observability
+- monitoring
+description: |
+  OpenTelemetry Collector is a vendor-agnostic implementation for receiving, processing, 
+  and exporting telemetry data (metrics, logs, and traces). It is a core component of 
+  the OpenTelemetry observability framework and serves as a central collection point 
+  for all telemetry signals from applications like dm-nkp-gitops-custom-app.
+displayName: OpenTelemetry Collector
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  OpenTelemetry Collector receives telemetry data via OTLP protocol and can export 
+  to multiple backends including Prometheus (metrics), Loki (logs), and Tempo (traces).
+  It provides data processing capabilities like batching, filtering, and enrichment.
+scope:
+- workspace
+- project
+supportLink: https://github.com/open-telemetry/opentelemetry-collector
+---

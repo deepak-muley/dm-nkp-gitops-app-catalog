@@ -1,0 +1,93 @@
+apiVersion: v1
+data:
+  values.yaml: |
+    # Prometheus configuration
+    prometheus:
+      enabled: true
+      prometheusSpec:
+        # Enable remote write receiver for OTel Collector
+        enableRemoteWriteReceiver: true
+        # Retention period
+        retention: 7d
+        # Storage configuration
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 20Gi
+        # Service monitors selector - select all
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+    
+    # Grafana configuration
+    grafana:
+      enabled: true
+      adminPassword: admin
+      persistence:
+        enabled: true
+        size: 5Gi
+      
+      # Additional datasources for observability stack
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki-gateway:80
+          access: proxy
+          jsonData:
+            derivedFields:
+              - datasourceUid: tempo
+                matcherRegex: "trace_id=(\\w+)"
+                name: TraceID
+                url: "$${__value.raw}"
+        - name: Tempo
+          type: tempo
+          url: http://tempo:3200
+          access: proxy
+          uid: tempo
+          jsonData:
+            tracesToLogs:
+              datasourceUid: loki
+              filterByTraceID: true
+              filterBySpanID: false
+            serviceMap:
+              datasourceUid: prometheus
+            nodeGraph:
+              enabled: true
+            lokiSearch:
+              datasourceUid: loki
+      
+      # Default dashboards
+      defaultDashboardsEnabled: true
+      defaultDashboardsTimezone: utc
+    
+    # Alertmanager configuration  
+    alertmanager:
+      enabled: true
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 5Gi
+    
+    # Node exporter for node metrics
+    nodeExporter:
+      enabled: true
+    
+    # Kube-state-metrics for Kubernetes metrics
+    kubeStateMetrics:
+      enabled: true
+    
+    # Prometheus Operator
+    prometheusOperator:
+      enabled: true
+kind: ConfigMap
+metadata:
+  name: ${releaseName}-config-defaults
+  namespace: ${releaseNamespace}
+---

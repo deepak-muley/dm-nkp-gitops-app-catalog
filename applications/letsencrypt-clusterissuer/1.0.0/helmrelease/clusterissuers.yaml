@@ -1,0 +1,44 @@
+# Let's Encrypt Staging ClusterIssuer
+# Use this for testing - certificates are NOT trusted by browsers
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # Staging server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address for certificate expiry notifications
+    # IMPORTANT: Update this email address before deploying
+    email: admin@example.com
+    # Name of secret to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging-account-key
+    # HTTP-01 challenge solver using ingress
+    solvers:
+    - http01:
+        ingress:
+          class: traefik
+---
+# Let's Encrypt Production ClusterIssuer
+# Use this for production - certificates ARE trusted by browsers
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # Production server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address for certificate expiry notifications
+    # IMPORTANT: Update this email address before deploying
+    email: admin@example.com
+    # Name of secret to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    # HTTP-01 challenge solver using ingress
+    solvers:
+    - http01:
+        ingress:
+          class: traefik
+---

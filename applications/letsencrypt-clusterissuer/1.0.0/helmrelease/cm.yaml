@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  # Configuration values - update email before deploying
+  acme-email: "admin@example.com"
+kind: ConfigMap
+metadata:
+  name: ${releaseName}-config-defaults
+  namespace: ${releaseNamespace}
+---

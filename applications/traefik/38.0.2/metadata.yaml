@@ -1,0 +1,25 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+- networking
+- ingress
+- infrastructure
+description: |
+  Traefik is a modern HTTP reverse proxy and load balancer that makes deploying 
+  microservices easy. It integrates with existing infrastructure components and 
+  configures itself automatically and dynamically. Traefik supports multiple backends
+  and includes automatic HTTPS via Let's Encrypt integration.
+displayName: Traefik
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  Traefik is a cloud-native edge router that publishes your services. It receives 
+  requests on behalf of your system and finds out which components are responsible 
+  for handling them. Supports automatic service discovery, load balancing, and 
+  integrates with cert-manager for TLS certificates.
+scope:
+- workspace
+supportLink: https://github.com/traefik/traefik
+---

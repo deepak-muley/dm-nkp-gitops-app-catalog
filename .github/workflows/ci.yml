@@ -1,0 +1,231 @@
+name: CI - Validate and Build Catalog
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NKP_VERSION: "2.16.0"
+  COLLECTION_TAG: "v0.2.0"
+
+jobs:
+  validate:
+    name: Validate Catalog Repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download and install NKP CLI
+        run: |
+          # Note: Replace with actual NKP CLI download URL from Nutanix portal
+          # This is a placeholder - you need to provide the actual CLI binary
+          echo "⚠️ NKP CLI installation requires manual setup"
+          echo "Download nkp CLI from Nutanix portal and add to PATH"
+          # Uncomment when you have the download URL:
+          # curl -L -o nkp.tar.gz "https://download.nutanix.com/nkp/${NKP_VERSION}/nkp-linux-amd64.tar.gz"
+          # tar -xzf nkp.tar.gz
+          # sudo mv nkp /usr/local/bin/
+          # nkp version
+
+      - name: Validate catalog structure
+        run: |
+          echo "=== Validating catalog structure ==="
+          
+          # Check required directories exist
+          if [ ! -d "applications" ]; then
+            echo "❌ Error: 'applications' directory not found"
+            exit 1
+          fi
+          echo "✅ applications directory exists"
+          
+          # List all applications
+          echo ""
+          echo "=== Applications in catalog ==="
+          for app in applications/*/; do
+            app_name=$(basename "$app")
+            echo "📦 $app_name"
+            for version in "$app"*/; do
+              if [ -d "$version" ]; then
+                version_name=$(basename "$version")
+                echo "   └── $version_name"
+                
+                # Check required files
+                required_files=("metadata.yaml" "kustomization.yaml" "helmrelease.yaml")
+                for file in "${required_files[@]}"; do
+                  if [ ! -f "${version}${file}" ]; then
+                    echo "      ❌ Missing: $file"
+                  else
+                    echo "      ✅ $file"
+                  fi
+                done
+                
+                # Check helmrelease directory
+                if [ -d "${version}helmrelease" ]; then
+                  echo "      📁 helmrelease/"
+                  for hr_file in "${version}helmrelease/"*; do
+                    if [ -f "$hr_file" ]; then
+                      echo "         ✅ $(basename $hr_file)"
+                    fi
+                  done
+                fi
+              fi
+            done
+          done
+
+      - name: Validate YAML syntax
+        run: |
+          echo "=== Validating YAML syntax ==="
+          # Install yq for YAML validation
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          
+          # Validate all YAML files
+          errors=0
+          for yaml_file in $(find applications -name "*.yaml" -o -name "*.yml"); do
+            if yq e '.' "$yaml_file" > /dev/null 2>&1; then
+              echo "✅ $yaml_file"
+            else
+              echo "❌ $yaml_file - Invalid YAML syntax"
+              errors=$((errors + 1))
+            fi
+          done
+          
+          if [ $errors -gt 0 ]; then
+            echo ""
+            echo "❌ Found $errors YAML validation errors"
+            exit 1
+          fi
+          echo ""
+          echo "✅ All YAML files are valid"
+
+      - name: Validate metadata.yaml schema
+        run: |
+          echo "=== Validating metadata.yaml files ==="
+          
+          for metadata_file in $(find applications -name "metadata.yaml"); do
+            echo "Checking: $metadata_file"
+            
+            # Check required fields
+            schema=$(yq e '.schema' "$metadata_file")
+            if [ "$schema" != "catalog.nkp.nutanix.com/v1/application-metadata" ]; then
+              echo "  ⚠️ Warning: Unexpected schema: $schema"
+            else
+              echo "  ✅ Schema: $schema"
+            fi
+            
+            display_name=$(yq e '.displayName' "$metadata_file")
+            if [ -z "$display_name" ] || [ "$display_name" = "null" ]; then
+              echo "  ❌ Missing displayName"
+            else
+              echo "  ✅ displayName: $display_name"
+            fi
+            
+            # Check if description exists
+            description=$(yq e '.description' "$metadata_file")
+            if [ -z "$description" ] || [ "$description" = "null" ]; then
+              echo "  ⚠️ Warning: Missing description"
+            else
+              echo "  ✅ Has description"
+            fi
+          done
+
+      # Uncomment this step when you have NKP CLI available
+      # - name: Validate with NKP CLI
+      #   run: |
+      #     nkp validate catalog-repository --repo-dir=.
+
+  build:
+    name: Build Catalog Bundle
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build catalog bundle (dry-run)
+        run: |
+          echo "=== Catalog Bundle Build (Dry Run) ==="
+          echo ""
+          echo "Would create bundle with:"
+          echo "  Collection tag: ${{ env.COLLECTION_TAG }}"
+          echo "  Registry: oci://ghcr.io/${{ github.repository_owner }}/nkp-custom-apps-catalog"
+          echo ""
+          echo "Applications to bundle:"
+          for app in applications/*/; do
+            app_name=$(basename "$app")
+            for version in "$app"*/; do
+              if [ -d "$version" ]; then
+                version_name=$(basename "$version")
+                echo "  - $app_name:$version_name"
+              fi
+            done
+          done
+          echo ""
+          echo "ℹ️ To actually build and push, run locally:"
+          echo "   ./build-and-push.sh ${{ env.COLLECTION_TAG }}"
+
+      # Uncomment when you have NKP CLI and want to actually build
+      # - name: Build catalog bundle
+      #   run: |
+      #     nkp create catalog-bundle --collection-tag ${{ env.COLLECTION_TAG }}
+
+      # - name: Push to GHCR
+      #   if: github.event_name == 'push'
+      #   env:
+      #     GHCR_USERNAME: ${{ github.actor }}
+      #     GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     nkp push bundle \
+      #       --bundle ./dm-nkp-gitops-app-catalog.tar \
+      #       --to-registry oci://ghcr.io/${{ github.repository_owner }}/nkp-custom-apps-catalog \
+      #       --to-registry-username ${GHCR_USERNAME} \
+      #       --to-registry-password ${GHCR_PASSWORD}
+
+  summary:
+    name: Summary
+    runs-on: ubuntu-latest
+    needs: [validate, build]
+    if: always()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate summary
+        run: |
+          echo "# Catalog Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Applications" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Application | Version | Category |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------------|---------|----------|" >> $GITHUB_STEP_SUMMARY
+          
+          for app in applications/*/; do
+            app_name=$(basename "$app")
+            for version in "$app"*/; do
+              if [ -d "$version" ]; then
+                version_name=$(basename "$version")
+                metadata="${version}metadata.yaml"
+                if [ -f "$metadata" ]; then
+                  # Install yq if not present
+                  if ! command -v yq &> /dev/null; then
+                    sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 2>/dev/null
+                    sudo chmod +x /usr/local/bin/yq
+                  fi
+                  category=$(yq e '.category[0] // "general"' "$metadata" 2>/dev/null || echo "general")
+                  echo "| $app_name | $version_name | $category |" >> $GITHUB_STEP_SUMMARY
+                else
+                  echo "| $app_name | $version_name | - |" >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
+            done
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Build Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Validate: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
