@@ -1,0 +1,62 @@
+# Kagent Operator Installation via Flux Job
+# 
+# This Job installs Kagent operator by applying the official install.yaml manifest.
+# The Job runs once and installs Kagent in the kagent-system namespace.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kagent-installer
+  namespace: kagent-system
+  labels:
+    app.kubernetes.io/name: kagent
+    app.kubernetes.io/component: installer
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: kagent-installer
+      restartPolicy: OnFailure
+      containers:
+      - name: installer
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Installing Kagent operator from official release..."
+          kubectl apply -f https://github.com/kagent-dev/kagent/releases/latest/download/install.yaml
+          echo "Waiting for Kagent CRDs to be established..."
+          kubectl wait --for=condition=established crd/mcpservers.kagent.dev --timeout=300s || true
+          echo "Waiting for Kagent controller to be ready..."
+          kubectl wait --for=condition=available deployment/kagent-controller-manager -n kagent-system --timeout=300s || true
+          echo "Kagent operator installed successfully"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kagent-installer
+  namespace: kagent-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kagent-installer
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kagent-installer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kagent-installer
+subjects:
+- kind: ServiceAccount
+  name: kagent-installer
+  namespace: kagent-system

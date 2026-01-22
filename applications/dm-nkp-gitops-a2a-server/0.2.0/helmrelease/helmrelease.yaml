@@ -1,0 +1,49 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: ${releaseName}-chart
+  namespace: ${releaseNamespace}
+spec:
+  interval: 6h0m0s
+  ref:
+    tag: "0.2.0"
+  url: oci://ghcr.io/deepak-muley/charts/dm-nkp-gitops-a2a-server
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dm-nkp-gitops-a2a-server
+  namespace: ${releaseNamespace}
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: ${releaseName}-chart
+    namespace: ${releaseNamespace}
+  dependsOn:
+    # Wait for cert-manager to be ready (for TLS certificates)
+    - name: cert-manager
+      namespace: cert-manager
+    # Wait for traefik gateway to be ready (for HTTPRoute)
+    - name: traefik
+      namespace: traefik-system
+    # Wait for Kagent operator to be ready (for MCPServer CRD mode)
+    - name: kagent
+      namespace: kagent-system
+  install:
+    crds: CreateReplace
+    createNamespace: true
+    remediation:
+      retries: 3
+    timeout: 5m0s
+  interval: 15s
+  targetNamespace: ${releaseNamespace}
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+    timeout: 5m0s
+  valuesFrom:
+    - kind: ConfigMap
+      name: ${releaseName}-config-defaults
+      optional: true
+---

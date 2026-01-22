@@ -1,0 +1,74 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+- monitoring
+- ai
+- infrastructure
+dependencies:
+# Infrastructure dependencies (install first)
+- name: cert-manager
+  version: ">=1.19.2"
+  description: Certificate management for TLS certificates (required for HTTPS endpoints)
+  required: true
+- name: letsencrypt-clusterissuer
+  version: ">=1.0.0"
+  description: Let's Encrypt ClusterIssuer for automatic TLS certificates
+  required: false
+- name: traefik
+  version: ">=38.0.2"
+  description: Ingress controller with Gateway API support for HTTP routing
+  required: true
+# Kagent operator (required for MCPServer CRD deployment mode)
+- name: kagent
+  version: ">=0.1.0"
+  description: Kagent operator for K8s-native MCPServer CRD deployment (recommended for production)
+  required: false
+# Observability (optional, for metrics endpoint)
+- name: kube-prometheus-stack
+  version: ">=80.13.3"
+  description: Prometheus and Grafana for metrics scraping and visualization
+  required: false
+description: |
+  A2A (Agent-to-Agent) and MCP (Model Context Protocol) server for NKP GitOps 
+  infrastructure monitoring and debugging. Provides AI assistants (Cursor, Claude, 
+  VS Code Copilot) with tools to query GitOps status, debug Flux reconciliation 
+  failures, check CAPI cluster health, monitor application deployments, and 
+  check Gatekeeper/Kyverno policy violations.
+  
+  Features:
+  - Full A2A protocol support with agent discovery (/.well-known/agent.json)
+  - MCP tool invocation over HTTP
+  - 15+ built-in tools for Flux CD, CAPI, Kommander monitoring
+  - Two deployment modes: Traditional (Deployment) or K8s-Native (MCPServer CRD)
+  - Enterprise-ready: HA, autoscaling, network policies, metrics
+  
+  Dependencies (install in order):
+  1. cert-manager - for TLS certificate management (required)
+  2. letsencrypt-clusterissuer - for Let's Encrypt certificates (optional)
+  3. traefik - for Gateway API HTTPRoute ingress (required)
+  4. kagent - for K8s-native MCPServer CRD deployment (optional, recommended for production)
+  5. kube-prometheus-stack - for Prometheus metrics scraping (optional)
+  
+  Note: Set deploymentMode=mcpserver in values to use Kagent MCPServer CRD (enterprise recommended).
+  When using MCPServer mode, ensure kagent is installed first.
+displayName: DM NKP GitOps A2A/MCP Server
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  dm-nkp-gitops-a2a-server is an AI agent server that enables AI assistants to 
+  monitor and debug NKP GitOps infrastructure. It exposes tools via the A2A 
+  (Agent-to-Agent) and MCP (Model Context Protocol) standards, allowing AI 
+  agents to query Flux CD Kustomizations, GitRepositories, HelmReleases, 
+  CAPI clusters/machines, Kommander Apps, and policy violations.
+  
+  The server integrates with Traefik Gateway API for HTTPS ingress and 
+  cert-manager for automatic TLS certificates. Optionally exposes Prometheus 
+  metrics for monitoring. Supports two deployment modes: traditional Kubernetes 
+  Deployment or Kagent MCPServer CRD for K8s-native management.
+scope:
+- workspace
+- project
+supportLink: https://github.com/deepak-muley/dm-nkp-gitops-custom-mcp-server
+---

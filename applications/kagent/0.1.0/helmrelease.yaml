@@ -1,0 +1,23 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${releaseName}-kagent-install
+  namespace: ${releaseNamespace}
+spec:
+  interval: 6h0m0s
+  path: ./helmrelease
+  postBuild:
+    substitute:
+      releaseName: ${releaseName}
+      releaseNamespace: ${releaseNamespace}
+  prune: true
+  retryInterval: 1m0s
+  # Note: Kagent installs from remote URL via Job, so we use a GitRepository
+  # that contains our installation manifests (this catalog repo)
+  sourceRef:
+    kind: GitRepository
+    name: ${releaseName}-source
+    namespace: ${releaseNamespace}
+  timeout: 10m0s
+  wait: true
+---

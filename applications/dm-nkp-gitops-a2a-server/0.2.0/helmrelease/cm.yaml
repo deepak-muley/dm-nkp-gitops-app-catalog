@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dm-nkp-gitops-a2a-server-values
+  namespace: ${releaseNamespace}
+data:
+  values.yaml: |
+    # =============================================================================
+    # DEPLOYMENT MODE
+    # =============================================================================
+    # Choose deployment mode:
+    # - "deployment": Traditional Kubernetes Deployment (works everywhere)
+    # - "mcpserver": Kagent MCPServer CRD (K8s-native, requires Kagent operator)
+    # For production on NKP, use "mcpserver" mode (requires kagent dependency)
+    deploymentMode: "mcpserver"
+    
+    # Replicas (set to 2+ for HA in production)
+    replicaCount: 2
+    
+    # =============================================================================
+    # A2A SERVER CONFIGURATION
+    # =============================================================================
+    a2a:
+      port: 8080
+      # CRITICAL: Always enable read-only mode in production
+      readOnly: true
+      logLevel: "info"
+    
+    # =============================================================================
+    # TLS CONFIGURATION
+    # =============================================================================
+    tls:
+      enabled: true
+      # Use the letsencrypt-clusterissuer from the catalog
+      clusterIssuer: "letsencrypt-prod"
+      # Set to true only if letsencrypt-clusterissuer is not installed
+      selfSigned: false
+    
+    # =============================================================================
+    # GATEWAY API / INGRESS
+    # =============================================================================
+    httpRoute:
+      enabled: true
+      # CHANGE THIS to your actual hostname
+      hostname: "gitops-agent.example.com"
+      parentRefs:
+        - name: traefik-gateway
+          namespace: traefik-system
+    
+    # =============================================================================
+    # RESOURCES
+    # =============================================================================
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    
+    # =============================================================================
+    # MCPSERVER CRD CONFIGURATION (only used when deploymentMode: mcpserver)
+    # =============================================================================
+    # Requires Kagent operator to be installed first:
+    # kubectl apply -f https://github.com/kagent-dev/kagent/releases/latest/download/install.yaml
+    mcpServer:
+      a2a:
+        enabled: true
+      metrics:
+        enabled: true
+        port: 9090
+        path: /metrics
+      pdb:
+        enabled: false
+        minAvailable: 1
+      autoscaling:
+        enabled: false
+        minReplicas: 1
+        maxReplicas: 3
+    
+    # =============================================================================
+    # NETWORK POLICY (Zero Trust)
+    # =============================================================================
+    networkPolicy:
+      enabled: true
+      ingressFrom:
+        - namespaceSelector:
+            matchLabels:
+              purpose: ai-agents
+        - namespaceSelector:
+            matchLabels:
+              name: kommander

@@ -1,0 +1,51 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+- infrastructure
+- operator
+- ai
+dependencies: []
+description: |
+  Kagent is a CNCF Sandbox project that provides Kubernetes-native MCP (Model Context Protocol) 
+  server deployment via MCPServer CRD. The Kagent operator manages MCP server lifecycles, 
+  auto-creates Deployments, Services, and other resources, and provides built-in observability.
+  
+  This application installs the Kagent operator which enables:
+  - MCPServer CRD for declarative MCP server management
+  - Auto-managed RBAC, ServiceAccounts, and networking
+  - Built-in metrics and health endpoints
+  - GitOps-friendly CRD-based deployments
+  
+  After installation, you can deploy MCP servers using MCPServer CRD resources. This is the 
+  recommended deployment mode for production MCP servers on NKP.
+  
+  Installation:
+  - Installs Kagent operator in kagent-system namespace
+  - Creates MCPServer CRD and related resources
+  - No additional dependencies required
+  
+  Usage:
+  After installation, set deploymentMode=mcpserver in MCP server Helm charts to use MCPServer CRD.
+displayName: Kagent Operator
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  Kagent operator enables Kubernetes-native deployment of MCP (Model Context Protocol) servers 
+  via MCPServer CRD. Instead of manually managing Deployments and Services, you declare an 
+  MCPServer resource and the operator handles the rest.
+  
+  Key Features:
+  - MCPServer CRD for declarative MCP server management
+  - Auto-created RBAC, ServiceAccounts, and networking
+  - Built-in Prometheus metrics
+  - Health and readiness probes
+  - GitOps-friendly (CRD-based)
+  - CNCF Sandbox project
+  
+  This operator is required for MCPServer CRD deployment mode in dm-nkp-gitops-a2a-server.
+scope:
+- workspace
+- project
+supportLink: https://kagent.dev
