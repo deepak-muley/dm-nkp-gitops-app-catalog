@@ -51,7 +51,7 @@ data:
     
     # Enable OTLP ingestion
     lokiCanary:
-      enabled: false
+      enabled: true
 kind: ConfigMap
 metadata:
   name: ${releaseName}-config-defaults

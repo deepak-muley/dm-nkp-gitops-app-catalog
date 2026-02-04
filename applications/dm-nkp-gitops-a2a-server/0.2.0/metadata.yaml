@@ -4,30 +4,6 @@ category:
 - monitoring
 - ai
 - infrastructure
-dependencies:
-# Infrastructure dependencies (install first)
-- name: cert-manager
-  version: ">=1.19.2"
-  description: Certificate management for TLS certificates (required for HTTPS endpoints)
-  required: true
-- name: letsencrypt-clusterissuer
-  version: ">=1.0.0"
-  description: Let's Encrypt ClusterIssuer for automatic TLS certificates
-  required: false
-- name: traefik
-  version: ">=38.0.2"
-  description: Ingress controller with Gateway API support for HTTP routing
-  required: true
-# Kagent operator (required for MCPServer CRD deployment mode)
-- name: kagent
-  version: ">=0.1.0"
-  description: Kagent operator for K8s-native MCPServer CRD deployment (recommended for production)
-  required: false
-# Observability (optional, for metrics endpoint)
-- name: kube-prometheus-stack
-  version: ">=80.13.3"
-  description: Prometheus and Grafana for metrics scraping and visualization
-  required: false
 description: |
   A2A (Agent-to-Agent) and MCP (Model Context Protocol) server for NKP GitOps 
   infrastructure monitoring and debugging. Provides AI assistants (Cursor, Claude, 

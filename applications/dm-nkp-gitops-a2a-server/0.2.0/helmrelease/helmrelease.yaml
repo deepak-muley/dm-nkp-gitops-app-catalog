@@ -6,8 +6,8 @@ metadata:
 spec:
   interval: 6h0m0s
   ref:
-    tag: "0.2.0"
-  url: oci://ghcr.io/deepak-muley/charts/dm-nkp-gitops-a2a-server
+    tag: "0.0.0-master-ecd8313"
+  url: oci://ghcr.io/deepak-muley/charts/dm-nkp-gitops-a2a-server/dm-nkp-gitops-a2a-server
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

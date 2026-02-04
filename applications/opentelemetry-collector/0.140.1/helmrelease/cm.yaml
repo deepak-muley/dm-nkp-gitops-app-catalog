@@ -4,6 +4,9 @@ data:
     mode: deployment
     replicaCount: 1
     
+    image:
+      repository: otel/opentelemetry-collector-contrib
+    
     config:
       receivers:
         otlp:

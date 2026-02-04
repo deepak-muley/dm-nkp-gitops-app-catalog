@@ -3,19 +3,6 @@ allowMultipleInstances: true
 category:
 - observability
 - monitoring
-dependencies:
-- name: kube-prometheus-stack
-  version: ">=67.4.0"
-  description: Prometheus for metrics storage
-  required: true
-- name: loki
-  version: ">=6.23.0"
-  description: Loki for log storage
-  required: true
-- name: tempo
-  version: ">=1.16.0"
-  description: Tempo for trace storage
-  required: true
 description: |
   OpenTelemetry Collector is a vendor-agnostic implementation for receiving, processing, 
   and exporting telemetry data (metrics, logs, and traces). It is a core component of 

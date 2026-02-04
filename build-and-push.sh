@@ -25,6 +25,12 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUNDLE_FILE="${REPO_DIR}/dm-nkp-gitops-app-catalog.tar"
 REGISTRY="oci://ghcr.io/deepak-muley/nkp-custom-apps-catalog"
 
+# Load .env.local if it exists
+if [ -f "${REPO_DIR}/.env.local" ]; then
+    echo -e "${YELLOW}Loading environment from .env.local...${NC}"
+    source "${REPO_DIR}/.env.local"
+fi
+
 # Check for required environment variables
 if [ -z "$GHCR_USERNAME" ]; then
     echo -e "${RED}Error: GHCR_USERNAME environment variable is not set${NC}"
@@ -61,8 +67,18 @@ fi
 echo -e "${GREEN}✓ Bundle created: ${BUNDLE_FILE}${NC}"
 echo ""
 
-# Step 3: Push bundle to registry
-echo -e "${YELLOW}Step 3: Pushing bundle to registry...${NC}"
+# Step 3: Login to GHCR
+echo -e "${YELLOW}Step 3: Logging into GitHub Container Registry...${NC}"
+echo "${GHCR_PASSWORD}" | docker login ghcr.io -u "${GHCR_USERNAME}" --password-stdin
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Docker login to ghcr.io failed!${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✓ Logged into ghcr.io${NC}"
+echo ""
+
+# Step 4: Push bundle to registry
+echo -e "${YELLOW}Step 4: Pushing bundle to registry...${NC}"
 nkp push bundle \
     --bundle "${BUNDLE_FILE}" \
     --to-registry "${REGISTRY}" \
@@ -75,9 +91,9 @@ fi
 echo -e "${GREEN}✓ Bundle pushed successfully${NC}"
 echo ""
 
-# Step 4: Make package public (optional)
+# Step 5: Make package public (optional)
 if [ "$MAKE_PUBLIC" = "true" ]; then
-    echo -e "${YELLOW}Step 4: Making packages public...${NC}"
+    echo -e "${YELLOW}Step 5: Making packages public...${NC}"
     PACKAGE_TYPE="container"
 
     # List of packages to make public (URL-encoded names)

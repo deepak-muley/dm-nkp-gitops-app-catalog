@@ -4,11 +4,6 @@ category:
 - security
 - certificates
 - infrastructure
-dependencies:
-- name: cert-manager
-  version: ">=1.19.2"
-  description: Certificate management controller required for ClusterIssuers
-  required: true
 description: |
   Let's Encrypt ClusterIssuer configurations for cert-manager. Provides both staging and 
   production ACME issuers for automated TLS certificate provisioning using Let's Encrypt.
