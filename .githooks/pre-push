@@ -1,0 +1,23 @@
+#!/bin/sh
+# Pre-push hook: run catalog validation before allowing push.
+# Install: cp .githooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+
+set -e
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Refuse push if any sensitive files are tracked
+SENSITIVE=".env.local .env setup-credentials.sh"
+for f in $SENSITIVE; do
+	if git ls-files --error-unmatch "$f" 2>/dev/null; then
+		echo "ERROR: Sensitive file '$f' is tracked. Remove it and add to .gitignore."
+		exit 1
+	fi
+done
+
+if [ -x "./catalog-workflow.sh" ]; then
+	./catalog-workflow.sh validate
+else
+	echo "catalog-workflow.sh not found or not executable; skipping validation."
+	exit 0
+fi

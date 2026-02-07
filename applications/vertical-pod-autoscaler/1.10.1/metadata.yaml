@@ -1,0 +1,15 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+- general
+description: Automatically set resource requests and limits for pods based on usage.
+displayName: Vertical Pod Autoscaler
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: Vertical Pod Autoscaler (VPA) frees you from setting up-to-date resource limits and requests. It sets requests automatically based on usage and maintains ratios between limits and requests.
+scope:
+- project
+supportLink: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
+---

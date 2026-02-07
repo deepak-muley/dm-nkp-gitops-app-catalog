@@ -8,6 +8,9 @@
 *.secret
 setup-credentials.sh
 
+# Local nkp CLI binary (optional; use PATH or install elsewhere)
+/nkp
+
 # Bundle files
 *.tar
 *.tgz
