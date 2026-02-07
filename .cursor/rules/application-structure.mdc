@@ -1,0 +1,33 @@
+---
+description: NKP application directory structure and YAML conventions
+globs: applications/**/*.yaml, applications/**/*.yml
+alwaysApply: false
+---
+
+# Application Structure
+
+## Required Files (per app version)
+
+```
+applications/<app>/<version>/
+├── metadata.yaml       # catalog.nkp.nutanix.com/v1/application-metadata schema
+├── helmrelease.yaml    # Root Flux Kustomization or app-level config
+├── kustomization.yaml  # references helmrelease.yaml
+└── helmrelease/        # Flux resources
+    ├── helmrelease.yaml   # OCIRepository + HelmRelease (Helm apps)
+    ├── cm.yaml            # ConfigMap for values (optional)
+    ├── kustomization.yaml
+    └── [app-specific YAML]
+```
+
+## metadata.yaml
+
+- `schema: catalog.nkp.nutanix.com/v1/application-metadata`
+- Required: `displayName`, `category`, `description`, `supportLink`
+- Use `supportLink` for official project URL (e.g. https://kgateway.dev), not generic GitHub.
+
+## helmrelease/ Contents
+
+- Use `${releaseName}` and `${releaseNamespace}` for substitution.
+- OCIRepository `ref.tag` must match an existing chart tag.
+- For Job-based: include namespace.yaml, Job with ServiceAccount, ClusterRole, ClusterRoleBinding.

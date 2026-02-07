@@ -1,0 +1,32 @@
+---
+description: Workflow for adding new applications to the catalog
+globs: applications/**/*, catalog-workflow.sh, "scripts/add-application.sh"
+alwaysApply: false
+---
+
+# Adding Applications
+
+## Standard Flow (OCI Helm Chart)
+
+```bash
+./catalog-workflow.sh add-app --appname <name> --version <version> --ocirepo oci://<registry>/path/chart [--force]
+```
+
+Example:
+```bash
+./catalog-workflow.sh add-app --appname podinfo --version 6.9.4 --ocirepo oci://ghcr.io/stefanprodan/charts/podinfo
+```
+
+## After add-app
+
+1. Verify OCI chart version exists (validation will fail if tag is invalid).
+2. Update `metadata.yaml` if needed: categories, description, supportLink.
+3. If chart needs CRDs or multi-step install, consider Job-based pattern (see kagent).
+
+## Job-Based Apps (No OCI Helm Chart)
+
+For apps like kagent that install via `kubectl apply` or custom scripts:
+- Create `applications/<app>/<version>/` manually.
+- Copy structure from `applications/kagent/0.1.0/`.
+- Use Flux Kustomization with `path: ./helmrelease` and sourceRef to OCIRepository.
+- helmrelease/ contains: namespace.yaml, install Job, RBAC, kustomization.yaml.

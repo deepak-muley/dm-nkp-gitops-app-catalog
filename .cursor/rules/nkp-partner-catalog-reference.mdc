@@ -1,0 +1,45 @@
+---
+description: Reference nkp-partner-catalog patterns and features for alignment
+alwaysApply: false
+globs: applications/**/*, apptests/**/*, justfile, .github/**/*
+---
+
+# NKP Partner Catalog Reference
+
+Align with [nkp-partner-catalog](https://github.com/nutanix-cloud-native/nkp-partner-catalog) patterns when adding features or tests.
+
+## Key Features to Adopt
+
+### 1. Devbox Environment
+- Use [devbox](https://www.jetify.com/docs/devbox/installing_devbox/) for reproducible dev environment.
+- nkp-partner-catalog: `devbox shell` provides nkp, just, go. See [devbox.json](https://github.com/nutanix-cloud-native/nkp-partner-catalog/blob/main/devbox.json).
+
+### 2. Just Recipes
+- Use [just](https://just.systems/man/en/introduction.html) for tasks: validation, pre-commit, release.
+- Pattern: `just/validate.just`, `just/tools.just`, `just/release.just`. Example:
+  ```
+  validate-manifests: nkp-cli
+    "{{ NKP_CLI }}" validate catalog-repository -v=3 --repo-dir="{{ REPO_ROOT }}"
+  ```
+
+### 3. Pre-commit & Signing
+- All commits **must be signed** (partner catalog requirement).
+- Pre-commit: gitlint, pre-commit hooks. See [CONTRIBUTING.md](https://github.com/nutanix-cloud-native/nkp-partner-catalog/blob/main/CONTRIBUTING.md).
+
+### 4. Flux Kustomization Patterns
+- Multiple top-level Kustomizations with [dependencies](https://fluxcd.io/flux/components/kustomize/kustomizations/#dependencies).
+- [Health checks](https://fluxcd.io/flux/components/kustomize/kustomizations/#health-checks).
+- Substitution: `${releaseName}`, `${releaseNamespace}`.
+
+### 5. AppTests (Ginkgo)
+- **AppScenario interface**: `Name()`, `Install()`, `InstallPreviousVersion()`, `Upgrade()`.
+- **apptests/** layout: `appscenarios/`, `suites/`, `utils/`.
+- **Install test**: Deploy app, verify HelmRelease `Ready` condition.
+- **Upgrade test**: Install previous version → upgrade → verify `UpgradeSucceeded` reason.
+- Labels: `Label("appname")`, `Label("install")`, `Label("upgrade")`.
+- Uses `github.com/mesosphere/kommander-applications/apptests` for Kind + Flux env.
+
+## References
+- [nkp-partner-catalog](https://github.com/nutanix-cloud-native/nkp-partner-catalog)
+- [CONTRIBUTING.md](https://github.com/nutanix-cloud-native/nkp-partner-catalog/blob/main/CONTRIBUTING.md)
+- [apptests/](https://github.com/nutanix-cloud-native/nkp-partner-catalog/tree/main/apptests)

@@ -1,0 +1,29 @@
+---
+description: Core NKP catalog project conventions and workflow
+alwaysApply: true
+---
+
+# NKP App Catalog Standards
+
+## Project Overview
+
+This is an NKP (Nutanix Kubernetes Platform) custom app catalog repository. It contains applications deployable via Flux/Kustomize with metadata for the NKP catalog UI.
+
+## Always Use Existing Scripts
+
+- **Adding apps**: Use `./catalog-workflow.sh add-app --appname <name> --version <version> --ocirepo <oci-path>` — never manually create application directories for standard Helm chart apps.
+- **Validation**: Use `./catalog-workflow.sh validate` (handles ghcr.io login + nkp validate).
+- **Build/push**: Use `./catalog-workflow.sh build-push <tag>`.
+- **Credentials**: Load via `source .env.local` or scripts auto-load it. Never check in secrets.
+
+## Application Patterns
+
+1. **Helm-based** (most apps): OCIRepository + HelmRelease in helmrelease/. Use catalog-workflow.sh add-app.
+2. **Job-based** (kagent): Flux Kustomization + Job that runs install. Manual creation only when no OCI Helm chart exists.
+
+## Key Paths
+
+- `applications/<app>/<version>/` — per-app layout
+- `metadata.yaml` — catalog schema: `catalog.nkp.nutanix.com/v1/application-metadata`
+- `helmrelease/` — Flux resources; uses `${releaseName}` and `${releaseNamespace}` substitution
+- `nkp` — local CLI binary (use `./nkp` or ensure in PATH)

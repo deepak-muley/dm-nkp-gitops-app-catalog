@@ -1,0 +1,75 @@
+# Agentgateway Installation via Flux Job
+#
+# This Job installs Agentgateway (AI gateway from kgateway-dev) via Helm.
+# Prerequisites: Gateway API CRDs, then agentgateway-crds, then agentgateway.
+# Uses bitnami/helm image which includes helm; kubectl is installed at runtime for Gateway API.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: agentgateway-installer
+  namespace: agentgateway-system
+  labels:
+    app.kubernetes.io/name: agentgateway
+    app.kubernetes.io/component: installer
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: agentgateway-installer
+      restartPolicy: OnFailure
+      containers:
+      - name: installer
+        image: bitnami/helm:latest
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Installing kubectl for Gateway API..."
+          curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl && mv kubectl /usr/local/bin/
+
+          echo "Installing Gateway API CRDs..."
+          kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+
+          echo "Installing Agentgateway CRDs..."
+          helm upgrade -i --create-namespace --namespace agentgateway-system \
+            --version v2.2.0-main agentgateway-crds oci://ghcr.io/kgateway-dev/charts/agentgateway-crds
+
+          echo "Installing Agentgateway..."
+          helm upgrade -i --namespace agentgateway-system \
+            --version v2.2.0-main agentgateway oci://ghcr.io/kgateway-dev/charts/agentgateway
+
+          echo "Waiting for Agentgateway controller to be ready..."
+          kubectl wait --for=condition=available deployment/agentgateway -n agentgateway-system --timeout=300s || true
+
+          echo "Agentgateway installed successfully"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: agentgateway-installer
+  namespace: agentgateway-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: agentgateway-installer
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: agentgateway-installer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: agentgateway-installer
+subjects:
+- kind: ServiceAccount
+  name: agentgateway-installer
+  namespace: agentgateway-system

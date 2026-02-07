@@ -21,7 +21,14 @@ if [ -z "$1" ]; then
 fi
 
 TAG="$1"
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Use local nkp binary if present, otherwise expect it in PATH
+NKP_CMD="${REPO_DIR}/nkp"
+if [ ! -f "$NKP_CMD" ] || [ ! -x "$NKP_CMD" ]; then
+    NKP_CMD="nkp"
+fi
+
 BUNDLE_FILE="${REPO_DIR}/dm-nkp-gitops-app-catalog.tar"
 REGISTRY="oci://ghcr.io/deepak-muley/nkp-custom-apps-catalog"
 
@@ -49,7 +56,7 @@ echo ""
 
 # Step 1: Validate catalog repository
 echo -e "${YELLOW}Step 1: Validating catalog repository...${NC}"
-nkp validate catalog-repository --repo-dir="${REPO_DIR}"
+"$NKP_CMD" validate catalog-repository --repo-dir="${REPO_DIR}"
 if [ $? -ne 0 ]; then
     echo -e "${RED}Validation failed!${NC}"
     exit 1
@@ -59,7 +66,7 @@ echo ""
 
 # Step 2: Create catalog bundle
 echo -e "${YELLOW}Step 2: Creating catalog bundle...${NC}"
-nkp create catalog-bundle --collection-tag "${TAG}"
+"$NKP_CMD" create catalog-bundle --collection-tag "${TAG}"
 if [ $? -ne 0 ]; then
     echo -e "${RED}Bundle creation failed!${NC}"
     exit 1
@@ -79,7 +86,7 @@ echo ""
 
 # Step 4: Push bundle to registry
 echo -e "${YELLOW}Step 4: Pushing bundle to registry...${NC}"
-nkp push bundle \
+"$NKP_CMD" push bundle \
     --bundle "${BUNDLE_FILE}" \
     --to-registry "${REGISTRY}" \
     --to-registry-username "${GHCR_USERNAME}" \

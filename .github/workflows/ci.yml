@@ -166,7 +166,7 @@ jobs:
           done
           echo ""
           echo "ℹ️ To actually build and push, run locally:"
-          echo "   ./build-and-push.sh ${{ env.COLLECTION_TAG }}"
+          echo "   ./catalog-workflow.sh build-push ${{ env.COLLECTION_TAG }}"
 
       # Uncomment when you have NKP CLI and want to actually build
       # - name: Build catalog bundle

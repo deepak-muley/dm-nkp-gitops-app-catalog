@@ -1,0 +1,42 @@
+---
+description: Check upstream NKP/Kommander catalogs for duplicate apps before adding
+globs: applications/**/*, add-application.sh
+alwaysApply: false
+---
+
+# Duplicate Application Check
+
+Before adding a new application to this catalog, **always check** the following upstream catalogs for existing apps. Report a **duplicate warning** if the requested app name already exists.
+
+## Upstream Catalogs (applications folder)
+
+| Catalog | GitHub API URL | Branch |
+|---------|----------------|--------|
+| NKP Nutanix Product | `https://api.github.com/repos/nutanix-cloud-native/nkp-nutanix-product-catalog/contents/applications?ref=release-2.x` | release-2.x |
+| NKP Partner | `https://api.github.com/repos/nutanix-cloud-native/nkp-partner-catalog/contents/applications?ref=main` | main |
+| Kommander | `https://api.github.com/repos/mesosphere/kommander-applications/contents/applications?ref=main` | main |
+
+## When to Check
+
+- When the user asks to add an app via `catalog-workflow.sh add-app --appname <name>` or similar
+- When manually creating `applications/<app>/` or editing scripts/add-application.sh for a new app
+
+## How to Check
+
+1. Use `mcp_web_fetch` (or equivalent) to fetch each API URL above.
+2. From the JSON response, extract entries where `"type": "dir"` (ignore `README.md` and other files).
+3. Collect app names from the `"name"` field of each dir entry.
+4. Compare the requested app name to these lists (case-insensitive).
+
+## Duplicate Report Format
+
+If the app exists in any upstream catalog:
+
+```
+⚠️ Duplicate app: "<appname>" already exists in:
+- [nkp-nutanix-product-catalog](https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog/tree/release-2.x/applications/<appname>)
+- [nkp-partner-catalog](https://github.com/nutanix-cloud-native/nkp-partner-catalog/tree/main/applications/<appname>)
+- [kommander-applications](https://github.com/mesosphere/kommander-applications/tree/main/applications/<appname>)
+```
+
+List only the catalogs where it was found. Recommend using the upstream catalog instead unless there is a specific need for a custom/overridden version.

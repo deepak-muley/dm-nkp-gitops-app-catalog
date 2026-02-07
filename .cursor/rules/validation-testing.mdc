@@ -1,0 +1,38 @@
+---
+description: Validation and testing workflow for the catalog
+globs: ".github/**/*", validate.sh, build-and-push.sh, "**/.bloodhound*"
+alwaysApply: false
+---
+
+# Validation and Testing
+
+## Local Validation
+
+```bash
+./catalog-workflow.sh validate   # Recommended: logs into ghcr.io, runs nkp validate
+# Or manually:
+source .env.local
+echo "$GHCR_PASSWORD" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+nkp validate catalog-repository --repo-dir=.
+```
+
+NKP validate requires Docker login when pulling private OCI charts (e.g. ghcr.io/deepak-muley/*).
+
+## CI (.github/workflows/ci.yml)
+
+- **validate** job: structure checks, YAML syntax (yq), metadata schema.
+- **build** job: dry-run of bundle creation (actual build requires NKP CLI in CI).
+- **summary** job: generates application table in GitHub Actions summary.
+
+## YAML Validation
+
+- All YAML under `applications/` must parse: `yq e '.' <file>`.
+- metadata.yaml: schema, displayName, description checked.
+
+## Bloodhound
+
+- Some apps have `.bloodhound.yaml` for schema validation. Use `strict: true` to reject unknown fields.
+
+## AppTests (Ginkgo / nkp-partner-catalog style)
+
+For Kind+Flux integration tests (Install, Upgrade scenarios), see docs/APP-TESTS-GUIDE.md. Aligns with [nkp-partner-catalog/apptests](https://github.com/nutanix-cloud-native/nkp-partner-catalog/tree/main/apptests).

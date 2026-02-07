@@ -1,0 +1,23 @@
+---
+description: Conventions for shell scripts in this project
+globs: "*.sh"
+alwaysApply: false
+---
+
+# Shell Script Conventions
+
+## Style
+
+- `set -e` for fail-fast.
+- Scripts in `scripts/`: use `REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"` for repo root.
+- Root `catalog-workflow.sh`: use `REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"`.
+- Source `.env.local` when credentials needed: `source "${REPO_DIR}/.env.local"`.
+- Use local `./nkp` when present: check `[ -f "$REPO_DIR/nkp" ]` and use it before falling back to `nkp` in PATH.
+
+## Scripts
+
+- `catalog-workflow.sh` — main entry; delegates to scripts via subcommands (add-app, validate, build-push, setup, test).
+- `scripts/add-application.sh` — adds apps via nkp generate + sed updates.
+- `scripts/validate.sh` — docker login ghcr.io, then nkp validate.
+- `scripts/build-and-push.sh` — validate → create bundle → docker login → push.
+- `scripts/setup-credentials.sh.example` — template; real `setup-credentials.sh` is gitignored.
