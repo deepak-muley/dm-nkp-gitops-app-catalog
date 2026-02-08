@@ -13,7 +13,7 @@ Detailed reference for building, pushing, and importing NKP catalog bundles. For
 
 ```
 applications/<app>/<version>/
-├── metadata.yaml          # catalog.nkp.nutanix.com/v1/application-metadata
+├── metadata.yaml          # catalog.nkp.nutanix.com/v1/application-metadata — see [APPLICATION-METADATA-FIELDS.md](APPLICATION-METADATA-FIELDS.md)
 ├── helmrelease.yaml
 ├── kustomization.yaml
 └── helmrelease/           # Flux OCIRepository + HelmRelease

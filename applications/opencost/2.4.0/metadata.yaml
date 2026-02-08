@@ -1,15 +1,33 @@
-schema: "catalog.nkp.nutanix.com/v1/application-metadata"
+schema: catalog.nkp.nutanix.com/v1/application-metadata
 displayName: OpenCost
-description: OpenCost provides cost monitoring and resource optimization for Kubernetes workloads.
+allowMultipleInstances: true
 category:
+  - dm-nkp-gitops-app-catalog
   - monitoring
+  - cost
+description: |
+  OpenCost provides cost monitoring and resource optimization for Kubernetes workloads.
+  It allocates infrastructure and in-cluster costs to namespaces, deployments, and labels
+  so you can understand and optimize spend.
 dependencies: []
 scope:
   - workspace
+  - project
 certifications:
   - qualified
+icon: https://raw.githubusercontent.com/opencost/opencost-website/main/static/img/logo.png
 licensing:
   - Pro
   - Ultimate
-icon: https://raw.githubusercontent.com/opencost/opencost-website/main/static/img/logo.png
+overview: |
+  **What it is** — OpenCost is an open-source cost monitoring and allocation tool for Kubernetes that gives you visibility into cluster and workload costs.
+
+  **Highlights**
+  - Real-time cost allocation by namespace, deployment, service, and label
+  - Integration with Prometheus and existing monitoring stacks
+  - Support for multiple clouds and on-premises; customizable pricing
+  - Optional UI for dashboards and reporting
+
+  **Documentation:** [OpenCost docs](https://opencost.io/docs/) | **Project:** [GitHub](https://github.com/opencost/opencost)
 supportLink: https://opencost.io/docs/
+type: custom

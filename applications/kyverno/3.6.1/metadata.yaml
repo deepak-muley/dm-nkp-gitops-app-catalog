@@ -1,18 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Kyverno
 allowMultipleInstances: false
 category:
-  - general
+  - dm-nkp-gitops-app-catalog
+  - security
+  - policy
+  - infrastructure
 description: |
-  Kyverno is a policy engine for Kubernetes. It is commonly used for managing policies for Kubernetes resources.
-displayName: Kyverno
+  Kyverno is a Kubernetes-native policy engine that validates, mutates, and generates
+  resources using declarative policies. Policies are written as Kubernetes resources
+  (no separate language), with support for context-aware rules and image verification.
+dependencies: []
 icon: https://raw.githubusercontent.com/kyverno/kyverno/main/website/static/img/kyverno-symbol.svg
 licensing:
   - Pro
   - Ultimate
 overview: |
-  Kyverno is a policy engine for Kubernetes. It is commonly used for managing policies for Kubernetes resources.
+  **What it is** — Kyverno lets you enforce security and compliance on Kubernetes by writing policies as CRDs: validate, mutate, or generate resources based on rules you define.
+
+  **Highlights**
+  - Policies as Kubernetes YAML; validate, mutate, and generate resources
+  - Image verification and attestation; context-aware rules (e.g. other resources, API)
+  - CNCF project; often used with Gatekeeper for policy enforcement on NKP
+
+  **Documentation:** [Kyverno docs](https://kyverno.io/docs/) | **Project:** [GitHub](https://github.com/kyverno/kyverno)
 scope:
   - workspace
-supportLink: https://github.com/kyverno/kyverno
----
-
+supportLink: https://kyverno.io/docs/
+type: custom

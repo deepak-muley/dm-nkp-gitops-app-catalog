@@ -20,7 +20,7 @@ Example:
 ## After add-app
 
 1. Verify OCI chart version exists (validation will fail if tag is invalid).
-2. Update `metadata.yaml` if needed: categories, description, supportLink.
+2. Update `metadata.yaml` if needed: **include category `dm-nkp-gitops-app-catalog`** (see catalog-category rule), plus description, supportLink, and other categories.
 3. If chart needs CRDs or multi-step install, consider Job-based pattern (see kagent).
 
 ## Job-Based Apps (No OCI Helm Chart)

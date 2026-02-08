@@ -1,20 +1,29 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Podinfo
 allowMultipleInstances: true
 category:
+  - dm-nkp-gitops-app-catalog
   - general
+  - demo
 description: |
   Podinfo is a tiny web application made with Go that showcases best practices
-  of running microservices in Kubernetes. It is commonly used for testing and
-  demonstrating Kubernetes features such as service mesh, GitOps workflows,
-  progressive delivery, and observability.
-displayName: Podinfo
+  of running microservices in Kubernetes. Used for testing and demonstrating
+  service mesh, GitOps, progressive delivery, and observability.
+dependencies: []
 icon: https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif
 licensing:
   - Pro
   - Ultimate
 overview: |
-  Podinfo is a microservice template for Kubernetes, written in Go. (Version 6.9.3 for upgrade testing.)
+  **What it is** — Podinfo is a small Go microservice for Kubernetes demos and testing: health checks, metrics, and API docs in one place.
+
+  **Highlights**
+  - Health (readiness/liveness), Prometheus metrics, OpenAPI/Swagger UI
+  - Multi-arch (AMD64/ARM64); optional Sigstore cosign verification
+  - 12-factor style; fault injection for chaos testing; often used for upgrade tests (e.g. 6.9.3)
+
+  **Documentation:** [GitHub](https://github.com/stefanprodan/podinfo) | **Project:** [stefanprodan/podinfo](https://github.com/stefanprodan/podinfo)
 scope:
   - project
 supportLink: https://github.com/stefanprodan/podinfo
----
+type: custom

@@ -1,24 +1,31 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Kube Prometheus Stack
 allowMultipleInstances: true
 category:
-- observability
-- monitoring
+  - dm-nkp-gitops-app-catalog
+  - observability
+  - monitoring
 description: |
-  kube-prometheus-stack collects Kubernetes manifests, Grafana dashboards, and Prometheus 
-  rules combined with documentation and scripts to provide easy to operate end-to-end 
-  Kubernetes cluster monitoring with Prometheus using the Prometheus Operator. Includes
+  kube-prometheus-stack bundles Kubernetes manifests, Grafana dashboards, and Prometheus
+  rules to provide end-to-end cluster monitoring with Prometheus Operator. Includes
   Prometheus, Grafana, Alertmanager, and pre-configured Kubernetes dashboards.
-displayName: Kube Prometheus Stack
+dependencies: []
 icon: https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/logo.png
 licensing:
-- Pro
-- Ultimate
+  - Pro
+  - Ultimate
 overview: |
-  A comprehensive monitoring stack including Prometheus for metrics collection and storage,
-  Grafana for visualization, Alertmanager for alerting, and pre-configured dashboards for
-  Kubernetes monitoring. Integrates with OpenTelemetry Collector for application metrics.
+  **What it is** — A full monitoring stack for Kubernetes: Prometheus for metrics, Grafana for dashboards, and Alertmanager for alerting, with ready-made Kubernetes dashboards and alerts.
+
+  **Highlights**
+  - Prometheus Operator for managing Prometheus and ServiceMonitors
+  - Grafana with pre-built dashboards for nodes, pods, and control plane
+  - Alertmanager for routing and silencing; integrates with PagerDuty, Slack, etc.
+  - Easy to extend with OpenTelemetry Collector and custom exporters
+
+  **Documentation:** [Helm chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | **Prometheus:** [prometheus.io](https://prometheus.io/docs/)
 scope:
-- workspace
-- project
+  - workspace
+  - project
 supportLink: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
----
+type: custom

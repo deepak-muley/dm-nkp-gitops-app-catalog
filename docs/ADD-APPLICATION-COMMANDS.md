@@ -49,6 +49,7 @@ Use `--force` to overwrite existing application directories without confirmation
 | tempo | 1.21.1 | `./catalog-workflow.sh add-app --appname tempo --version 1.21.1 --ocirepo oci://ghcr.io/grafana/helm-charts/tempo` |
 | opentelemetry-collector | 0.140.1 | `./catalog-workflow.sh add-app --appname opentelemetry-collector --version 0.140.1 --ocirepo oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-collector` |
 | opentelemetry-operator | 0.140.0 | `./catalog-workflow.sh add-app --appname opentelemetry-operator --version 0.140.0 --ocirepo oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-operator` |
+| clickstack | 1.1.1 | `./catalog-workflow.sh add-app --appname clickstack --version 1.1.1 --helmrepo clickstack/clickstack --helmrepo-url https://clickhouse.github.io/ClickStack-helm-charts --ocipush oci://ghcr.io/deepak-muley/charts/clickstack` |
 
 ### Demo / General
 

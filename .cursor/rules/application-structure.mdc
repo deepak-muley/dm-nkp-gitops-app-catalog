@@ -20,11 +20,55 @@ applications/<app>/<version>/
     └── [app-specific YAML]
 ```
 
-## metadata.yaml
+## metadata.yaml — Table 41: Application Metadata Schema
 
-- `schema: catalog.nkp.nutanix.com/v1/application-metadata`
-- Required: `displayName`, `category`, `description`, `supportLink`
-- Use `supportLink` for official project URL (e.g. https://kgateway.dev), not generic GitHub.
+Use schema `catalog.nkp.nutanix.com/v1/application-metadata`. Include all applicable fields from the NKP Application Metadata Schema. Validate with: `nkp validate catalog-repository --repo-dir=.`
+
+| Field | Default | Description |
+|-------|--------|-------------|
+| schema | (required) | `catalog.nkp.nutanix.com/v1/application-metadata` — identifies the schema. |
+| displayName | App ID | Display name of the application for the UI. |
+| allowMultipleInstances | true | Whether multiple instances of the application can be installed. |
+| category | [general] | One or more categories; used to group applications in the UI. |
+| description | "" | Short description (sentence or two), displayed on the application card. |
+| dependencies | [] | List of app names that should be installed for this app to function; UI does not block install if missing. |
+| requiredDependencies | [] | List of app names required to be installed for this app to be enabled in the UI. |
+| k8sVersionSupport | - | String for compatible Kubernetes version or range (e.g. "1.29 to 1.32"). |
+| icon | - | URL to icon image, or base64-encoded SVG for application logos in the UI. |
+| nkpVersionSupport | - | String for compatible NKP version or range. |
+| overview | - | **Markdown** overview on the application detail page. Use a consistent format (see below). |
+| supportLink | - | Link to the support or documentation page (use official project/docs URL). |
+| scope | [project] | List of scopes: `project` and/or `workspace`. |
+| upgradesFrom | - | Version or range of versions that the application can be upgraded from. |
+| licensing | [Pro, Ultimate] | Cluster must have one of these licenses for the app to be installable. |
+| certifications | [] | List of certifications (e.g. qualified). |
+| type | custom | Type of application. |
+
+### Overview section — consistent format
+
+Make the **overview** field professional and consistent across all apps. Use Markdown and include, where relevant:
+
+1. **What it is** — One or two sentences describing the application and its purpose.
+2. **Key features / highlights** — Bullet list of important capabilities (e.g. security, observability, integration).
+3. **Documentation** — Link to official docs (e.g. `[Documentation](https://...)`).
+4. **Product / usage** — Link to product page, getting started, or usage/demo videos if available.
+5. **Related** — Any quick links (e.g. GitHub, release notes, support).
+
+Example shape (adapt per app):
+
+```yaml
+overview: |
+  **What it is** — Short description of the app and what problem it solves.
+
+  **Highlights**
+  - Feature one
+  - Feature two
+
+  **Documentation:** [Official docs](https://...) | **Product:** [Website / demo](https://...)
+```
+
+- Required in practice for catalog quality: `displayName`, `category`, `description`, `supportLink`.
+- Use `supportLink` for the primary official URL (docs or project), not only generic GitHub.
 
 ## helmrelease/ Contents
 

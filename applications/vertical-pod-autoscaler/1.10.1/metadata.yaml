@@ -1,15 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Vertical Pod Autoscaler
 allowMultipleInstances: true
 category:
-- general
-description: Automatically set resource requests and limits for pods based on usage.
-displayName: Vertical Pod Autoscaler
+  - dm-nkp-gitops-app-catalog
+  - general
+  - autoscaling
+description: |
+  Automatically set resource requests and limits for pods based on actual usage.
+  VPA recommends or applies CPU and memory so you don't have to guess; it maintains
+  ratios between limits and requests.
+dependencies: []
 icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
 licensing:
-- Pro
-- Ultimate
-overview: Vertical Pod Autoscaler (VPA) frees you from setting up-to-date resource limits and requests. It sets requests automatically based on usage and maintains ratios between limits and requests.
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — Vertical Pod Autoscaler (VPA) automatically sizes pod CPU and memory requests and limits based on observed usage, reducing over- and under-provisioning.
+
+  **Highlights**
+  - Recommends or applies resource requests/limits from historical and live data
+  - Maintains configurable ratios between limits and requests
+  - Works per workload (e.g. deployment); can run in recommendation-only or auto-update mode
+  - Part of Kubernetes autoscaling SIG; runs on any standard cluster
+
+  **Documentation:** [VPA README](https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler) | **Project:** [Kubernetes autoscaler](https://github.com/kubernetes/autoscaler)
 scope:
-- project
+  - project
 supportLink: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
----
+type: custom

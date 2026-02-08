@@ -1,25 +1,31 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Traefik
 allowMultipleInstances: false
 category:
-- networking
-- ingress
-- infrastructure
+  - dm-nkp-gitops-app-catalog
+  - networking
+  - ingress
+  - infrastructure
 description: |
-  Traefik is a modern HTTP reverse proxy and load balancer that makes deploying 
-  microservices easy. It integrates with existing infrastructure components and 
-  configures itself automatically and dynamically. Traefik supports multiple backends
-  and includes automatic HTTPS via Let's Encrypt integration.
-displayName: Traefik
+  Traefik is a modern HTTP reverse proxy and load balancer that makes deploying
+  microservices easy. It integrates with existing infrastructure and configures
+  itself automatically. Supports multiple backends and automatic HTTPS via Let's Encrypt.
+dependencies: []
 icon: https://raw.githubusercontent.com/traefik/traefik/master/webui/public/favicon-32x32.png
 licensing:
-- Pro
-- Ultimate
+  - Pro
+  - Ultimate
 overview: |
-  Traefik is a cloud-native edge router that publishes your services. It receives 
-  requests on behalf of your system and finds out which components are responsible 
-  for handling them. Supports automatic service discovery, load balancing, and 
-  integrates with cert-manager for TLS certificates.
+  **What it is** — Traefik is a cloud-native edge router and reverse proxy that discovers services and routes traffic, with built-in TLS and observability.
+
+  **Highlights**
+  - Automatic service discovery and dynamic configuration from Kubernetes Ingress and CRDs
+  - Let's Encrypt integration for automatic HTTPS; supports cert-manager
+  - Native metrics (Prometheus) and access logs; Gateway API support
+  - Single binary; widely used as the default ingress in NKP and Kommander
+
+  **Documentation:** [Traefik docs](https://doc.traefik.io/traefik/) | **Project:** [GitHub](https://github.com/traefik/traefik)
 scope:
-- workspace
-supportLink: https://github.com/traefik/traefik
----
+  - workspace
+supportLink: https://doc.traefik.io/traefik/
+type: custom

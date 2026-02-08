@@ -1,18 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: OAuth2 Proxy
 allowMultipleInstances: false
 category:
+  - dm-nkp-gitops-app-catalog
+  - security
+  - authentication
   - general
 description: |
-  OAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
-displayName: Oauth2 Proxy
+  OAuth2 Proxy is a reverse proxy that adds authentication in front of web apps and
+  APIs. It validates users via OAuth2/OIDC providers (Google, GitHub, Azure AD, etc.)
+  by email, domain, or group before allowing access.
+dependencies: []
 icon: https://raw.githubusercontent.com/oauth2-proxy/oauth2-proxy/main/docs/static/img/logos/oauth2-proxy-logo.png
 licensing:
   - Pro
   - Ultimate
 overview: |
-  OAuth2 Proxy is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
+  **What it is** — OAuth2 Proxy sits in front of your services and enforces login via an OAuth2 or OIDC provider, so only authorized users (e.g. by email or group) can access them.
+
+  **Highlights**
+  - Supports Google, GitHub, Azure AD, Keycloak, and other OIDC/OAuth2 providers
+  - Validate by email, domain, or group; optional static file serving
+  - Often used with Traefik or Ingress for “login in front of” internal tools and dashboards
+
+  **Documentation:** [OAuth2 Proxy docs](https://oauth2-proxy.github.io/oauth2-proxy/) | **Project:** [GitHub](https://github.com/oauth2-proxy/oauth2-proxy)
 scope:
   - workspace
-supportLink: https://github.com/oauth2-proxy/oauth2-proxy
----
-
+supportLink: https://oauth2-proxy.github.io/oauth2-proxy/
+type: custom

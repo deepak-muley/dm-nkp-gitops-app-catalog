@@ -1,41 +1,31 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: DM NKP GitOps Custom App
 allowMultipleInstances: true
 category:
-- general
-- observability
-- demo
+  - dm-nkp-gitops-app-catalog
+  - general
+  - observability
+  - demo
 description: |
   A production-ready Golang application with OpenTelemetry telemetry (metrics, logs, traces),
-  designed for deployment in Nutanix NKP infrastructure. This application serves as a reference
-  implementation for building cloud-native applications with comprehensive observability.
-  
-  Dependencies (install in order):
-  1. cert-manager - for TLS certificate management (required for operator webhooks)
-  2. letsencrypt-clusterissuer - for Let's Encrypt certificates (optional)
-  3. traefik - for ingress routing (optional)
-  4. kube-prometheus-stack (Prometheus + Grafana) - for metrics storage and visualization
-  5. loki - for log aggregation
-  6. tempo - for distributed tracing
-  7. opentelemetry-operator - for managing OTel Collector via CRDs (recommended)
-     OR opentelemetry-collector - standalone collector deployment (alternative)
-  
-  Note: The app connects to otel-collector:4317 for OTLP telemetry export.
-  - With opentelemetry-operator: Deploy the included OpenTelemetryCollector CR named "otel"
-  - With opentelemetry-collector: Uses the standalone collector service directly
-displayName: DM NKP GitOps Custom App
+  designed for deployment on Nutanix NKP. Serves as a reference for building cloud-native
+  apps with full observability. Connects to OpenTelemetry Collector (OTLP :4317).
+dependencies: []
 icon: ""
 licensing:
-- Pro
-- Ultimate
+  - Pro
+  - Ultimate
 overview: |
-  dm-nkp-gitops-custom-app is a demo application demonstrating OpenTelemetry telemetry export 
-  (metrics, logs, traces), health/readiness endpoints, and Kubernetes deployment with Helm.
-  It integrates with the complete observability stack: OpenTelemetry Collector (managed by
-  the OpenTelemetry Operator) receives telemetry via OTLP and forwards to Prometheus (metrics),
-  Loki (logs), and Tempo (traces), all visualized in Grafana. Optionally integrates with 
-  Traefik for ingress and cert-manager with Let's Encrypt for automatic TLS certificates.
+  **What it is** — A demo app with built-in OpenTelemetry (metrics, logs, traces) and health endpoints, showing how to build observable services on NKP.
+
+  **Highlights**
+  - OTLP export to OpenTelemetry Collector; works with Prometheus, Loki, Tempo, and Grafana
+  - Optional integration with Traefik and cert-manager/Let's Encrypt for TLS
+  - Reference for NKP custom apps and observability stack integration
+
+  **Documentation:** [GitHub](https://github.com/deepak-muley/dm-nkp-gitops-custom-app) | **Project:** [dm-nkp-gitops-custom-app](https://github.com/deepak-muley/dm-nkp-gitops-custom-app)
 scope:
-- project
-- workspace
+  - project
+  - workspace
 supportLink: https://github.com/deepak-muley/dm-nkp-gitops-custom-app
----
+type: custom

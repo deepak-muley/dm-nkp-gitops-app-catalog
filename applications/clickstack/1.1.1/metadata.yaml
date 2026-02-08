@@ -1,0 +1,38 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: ClickStack
+allowMultipleInstances: true
+category:
+  - dm-nkp-gitops-app-catalog
+  - observability
+  - monitoring
+  - logging
+description: |
+  ClickStack is a production-grade observability platform built on ClickHouse, unifying
+  logs, traces, metrics, and sessions in a single high-performance solution for
+  monitoring and debugging complex systems.
+dependencies: []
+requiredDependencies: []
+icon: ""
+overview: |
+  **What it is** — ClickStack is a production-grade observability platform built on ClickHouse, unifying logs, traces, metrics, and sessions in a single high-performance solution. It enables developers and SREs to correlate and search observability data end-to-end without switching tools.
+
+  **Highlights**
+  - Correlate and search logs, metrics, session replays, and traces in one place
+  - HyperDX UI with full-text and property search (e.g. level:err), SQL optional
+  - OpenTelemetry (OTel) supported out of the box; schema-agnostic on your ClickHouse schema
+  - Sub-second queries and high-cardinality workloads via ClickHouse columnar engine
+  - Alerts, dashboards, live tail, and event deltas for anomaly detection
+  - Open source; can be self-managed or used with ClickHouse Cloud
+
+  **Documentation:** [ClickStack docs](https://clickhouse.com/docs/use-cases/observability/clickstack/overview) | **Getting started:** [Helm deployment](https://clickhouse.com/docs/use-cases/observability/clickstack/deployment/helm)
+
+  **Related:** [ClickStack Helm charts](https://github.com/ClickHouse/ClickStack-helm-charts) | [ClickHouse](https://clickhouse.com)
+scope:
+  - workspace
+  - project
+supportLink: https://clickhouse.com/docs/use-cases/observability/clickstack/overview
+licensing:
+  - Pro
+  - Ultimate
+certifications: []
+type: custom

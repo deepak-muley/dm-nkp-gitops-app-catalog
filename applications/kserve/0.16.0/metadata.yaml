@@ -1,15 +1,31 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: KServe
 allowMultipleInstances: true
 category:
-- general
-description: ""
-displayName: Kserve
+  - dm-nkp-gitops-app-catalog
+  - artificial-intelligence
+  - ai-ml
+  - infrastructure
+description: |
+  KServe provides a standard, Kubernetes-native way to deploy and serve ML models
+  with autoscaling, canary rollouts, and multi-framework support (PyTorch, TensorFlow,
+  scikit-learn, XGBoost, etc.) behind a single InferenceService API.
+dependencies: []
 icon: ""
 licensing:
-- Pro
-- Ultimate
-overview: ""
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — KServe is a model-serving layer on Kubernetes that turns trained models into scalable, production-ready inference services with a consistent API.
+
+  **Highlights**
+  - Single InferenceService CRD for multiple frameworks (PyTorch, TensorFlow, SKLearn, XGBoost, etc.)
+  - Serverless scaling to zero and canary/blue-green deployments
+  - Integrates with Kubeflow, MLflow, and S3/GCS model storage
+  - Part of the Kubeflow project; supports vLLM and custom runtimes
+
+  **Documentation:** [KServe docs](https://kserve.github.io/website/) | **Project:** [GitHub](https://github.com/kserve/kserve)
 scope:
-- project
-supportLink: https://github.com/kserve/kserve
----
+  - project
+supportLink: https://kserve.github.io/website/
+type: custom

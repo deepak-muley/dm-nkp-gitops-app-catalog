@@ -1,18 +1,27 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Kro
 allowMultipleInstances: false
 category:
+  - dm-nkp-gitops-app-catalog
+  - infrastructure
   - general
 description: |
-  Kro is a tool for managing Kro resources.
-displayName: kro
+  Kro is an operator and tooling for managing Kubernetes resources and workflows.
+  It provides automation and lifecycle management for cluster operations.
+dependencies: []
 icon: ""
 licensing:
   - Pro
   - Ultimate
 overview: |
-  Kro is a tool for managing Kro resources.
+  **What it is** — Kro provides tooling and operator capabilities for managing Kubernetes resources and operational workflows.
+
+  **Highlights**
+  - Kubernetes resource and workflow management
+  - Operator-based automation for cluster operations
+
+  **Documentation:** [GitHub](https://github.com/kro/kro) | **Project:** [Kro](https://github.com/kro/kro)
 scope:
   - workspace
 supportLink: https://github.com/kro/kro
----
-
+type: custom

@@ -1,0 +1,27 @@
+---
+description: Add catalog category so all apps from this repo are findable in NKP UI
+globs: applications/**/metadata.yaml
+alwaysApply: false
+---
+
+# Catalog Category for NKP UI
+
+All applications in this catalog must include the category **`dm-nkp-gitops-app-catalog`** in their `metadata.yaml` so users can find and filter apps from this custom catalog in the NKP UI.
+
+## Rule
+
+- In every `applications/<app>/<version>/metadata.yaml`, the `category` list **must** include:
+  - **`dm-nkp-gitops-app-catalog`**
+- Keep existing categories (e.g. `observability`, `security`, `ai-ml`); add this one in addition.
+- When adding new apps (e.g. via `catalog-workflow.sh add-app`), add `dm-nkp-gitops-app-catalog` to the category list in the generated `metadata.yaml`.
+
+## Example
+
+```yaml
+category:
+  - dm-nkp-gitops-app-catalog
+  - observability
+  - monitoring
+```
+
+This allows the NKP UI to filter or group all apps sourced from the dm-nkp-gitops-app-catalog repository.

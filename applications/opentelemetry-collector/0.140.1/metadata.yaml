@@ -1,24 +1,31 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: OpenTelemetry Collector
 allowMultipleInstances: true
 category:
-- observability
-- monitoring
+  - dm-nkp-gitops-app-catalog
+  - observability
+  - monitoring
 description: |
-  OpenTelemetry Collector is a vendor-agnostic implementation for receiving, processing, 
-  and exporting telemetry data (metrics, logs, and traces). It is a core component of 
-  the OpenTelemetry observability framework and serves as a central collection point 
-  for all telemetry signals from applications like dm-nkp-gitops-custom-app.
-displayName: OpenTelemetry Collector
+  OpenTelemetry Collector is a vendor-agnostic implementation for receiving, processing,
+  and exporting telemetry data (metrics, logs, and traces). It serves as a central
+  collection point for all telemetry signals from your applications.
+dependencies: []
 icon: https://raw.githubusercontent.com/open-telemetry/opentelemetry.io/main/static/img/logo.svg
 licensing:
-- Pro
-- Ultimate
+  - Pro
+  - Ultimate
 overview: |
-  OpenTelemetry Collector receives telemetry data via OTLP protocol and can export 
-  to multiple backends including Prometheus (metrics), Loki (logs), and Tempo (traces).
-  It provides data processing capabilities like batching, filtering, and enrichment.
+  **What it is** — The OpenTelemetry Collector is the standard way to receive, process, and export metrics, logs, and traces in a vendor-neutral way across your platform.
+
+  **Highlights**
+  - Single component for metrics, logs, and traces via OTLP and legacy protocols
+  - Export to Prometheus, Loki, Tempo, and many other backends
+  - Processing: batching, filtering, sampling, and attribute enrichment
+  - CNCF project; works with any OpenTelemetry-instrumented application
+
+  **Documentation:** [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) | **Project:** [GitHub](https://github.com/open-telemetry/opentelemetry-collector)
 scope:
-- workspace
-- project
-supportLink: https://github.com/open-telemetry/opentelemetry-collector
----
+  - workspace
+  - project
+supportLink: https://opentelemetry.io/docs/collector/
+type: custom

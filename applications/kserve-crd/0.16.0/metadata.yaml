@@ -1,15 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: KServe CRD
 allowMultipleInstances: true
 category:
-- general
-description: ""
-displayName: Kserve Crd
+  - dm-nkp-gitops-app-catalog
+  - artificial-intelligence
+  - ai-ml
+  - infrastructure
+description: |
+  Installs the KServe custom resource definitions (CRDs) only. Deploy this when
+  you need InferenceService and related CRDs in the cluster without the full
+  KServe control plane (e.g. for a shared cluster where KServe runs elsewhere).
+dependencies: []
 icon: ""
 licensing:
-- Pro
-- Ultimate
-overview: ""
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — This chart installs only the KServe CRDs (InferenceService, etc.) so that other KServe components or custom controllers can use them.
+
+  **Highlights**
+  - Lightweight: CRDs only, no controllers or runtime dependencies
+  - Use when KServe control plane is installed separately or in another cluster
+  - Version must match the KServe version that will use these CRDs
+
+  **Documentation:** [KServe docs](https://kserve.github.io/website/) | **Project:** [GitHub](https://github.com/kserve/kserve)
 scope:
-- project
+  - project
 supportLink: https://github.com/kserve/kserve
----
+type: custom

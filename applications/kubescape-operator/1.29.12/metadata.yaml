@@ -1,18 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Kubescape Operator
 allowMultipleInstances: false
 category:
-  - general
+  - dm-nkp-gitops-app-catalog
+  - security
+  - compliance
+  - infrastructure
 description: |
-  Kubescape Operator is a tool for managing Kubescape. It is commonly used for managing Kubescape resources.
-displayName: Kubescape Operator
+  Kubescape Operator deploys and manages Kubescape in the cluster. Kubescape
+  provides risk and compliance scanning for Kubernetes (frameworks like NSA-CISA,
+  MITRE), vulnerability scanning, and RBAC visualization.
+dependencies: []
 icon: https://raw.githubusercontent.com/kubescape/kubescape-operator/main/website/static/img/kubescape-operator-symbol.svg
 licensing:
   - Pro
   - Ultimate
 overview: |
-  Kubescape Operator is a tool for managing Kubescape. It is commonly used for managing Kubescape resources.
+  **What it is** — The Kubescape Operator installs and manages Kubescape, a Kubernetes security and compliance platform that scans clusters against controls and frameworks.
+
+  **Highlights**
+  - Risk and compliance scanning (e.g. NSA-CISA, MITRE); vulnerability assessment
+  - RBAC and permission visualization; CI/CD and GitOps integration
+  - Open-source; runs in-cluster for continuous scanning
+
+  **Documentation:** [Kubescape](https://kubescape.io/docs/) | **Project:** [kubescape-operator](https://github.com/kubescape/kubescape-operator)
 scope:
   - workspace
-supportLink: https://github.com/kubescape/kubescape-operator
----
-
+supportLink: https://kubescape.io/docs/
+type: custom

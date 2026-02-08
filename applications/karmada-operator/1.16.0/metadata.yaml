@@ -1,18 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Karmada Operator
 allowMultipleInstances: false
 category:
+  - dm-nkp-gitops-app-catalog
+  - infrastructure
+  - multicluster
   - general
 description: |
-  Karmada Operator is a tool for managing Karmada. It is commonly used for managing Karmada resources.
-displayName: Karmada Operator
+  Karmada Operator installs and manages the Karmada control plane for multi-cluster
+  Kubernetes. Karmada provides multi-cluster scheduling, propagation, and
+  failover so you can run workloads across multiple clusters from a single API.
+dependencies: []
 icon: https://raw.githubusercontent.com/karmada/karmada/main/website/static/img/karmada-operator-symbol.svg
 licensing:
   - Pro
   - Ultimate
 overview: |
-  Karmada Operator is a tool for managing Karmada. It is commonly used for managing Karmada resources.
+  **What it is** — The Karmada Operator deploys and manages Karmada, an open-source multi-cluster Kubernetes system that schedules and propagates workloads across clusters.
+
+  **Highlights**
+  - Single control plane to manage multiple clusters; native Kubernetes API compatibility
+  - Multi-cluster scheduling and propagation; cross-cluster failover and scaling
+  - CNCF project; works with existing Kube configs and Helm
+
+  **Documentation:** [Karmada](https://karmada.io/docs/) | **Project:** [karmada-operator](https://github.com/karmada-operator/karmada-operator)
 scope:
   - workspace
-supportLink: https://github.com/karmada-operator/karmada-operator
----
-
+supportLink: https://karmada.io/docs/
+type: custom

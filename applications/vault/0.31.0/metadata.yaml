@@ -1,18 +1,30 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Vault
 allowMultipleInstances: false
 category:
-  - general
+  - dm-nkp-gitops-app-catalog
+  - security
+  - secrets
+  - infrastructure
 description: |
-  Vault is a tool for managing secrets. It is commonly used for storing and retrieving secrets.
-displayName: Vault
+  HashiCorp Vault secures, stores, and tightly controls access to tokens, passwords,
+  certificates, API keys, and other secrets. It provides encryption as a service,
+  dynamic secrets, and audit logging for compliance.
+dependencies: []
 icon: https://raw.githubusercontent.com/hashicorp/vault/main/website/static/img/vault-symbol.svg
 licensing:
   - Pro
   - Ultimate
 overview: |
-  Vault is a tool for managing secrets. It is commonly used for storing and retrieving secrets.
+  **What it is** — Vault is a secrets management and encryption platform that centralizes secrets, enforces access policies, and provides audit logs for compliance.
+
+  **Highlights**
+  - Dynamic secrets for databases, clouds, and APIs; encryption as a service
+  - Kubernetes auth method for pod identity; PKI and transit encryption
+  - Audit logging and detailed access control; runs on Kubernetes via Helm
+
+  **Documentation:** [Vault docs](https://developer.hashicorp.com/vault/docs) | **Project:** [HashiCorp Vault](https://github.com/hashicorp/vault)
 scope:
   - workspace
-supportLink: https://github.com/hashicorp/vault
----
-
+supportLink: https://developer.hashicorp.com/vault/docs
+type: custom

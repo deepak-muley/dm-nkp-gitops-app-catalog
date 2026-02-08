@@ -1,24 +1,31 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: Agentgateway
 allowMultipleInstances: false
 category:
-- infrastructure
-- ai
-- networking
-dependencies: []
+  - dm-nkp-gitops-app-catalog
+  - infrastructure
+  - ai
+  - networking
 description: |
-  Agentgateway is the AI-focused gateway from kgateway-dev that provides security,
-  observability, and traffic management for AI/LLM workloads. Works alongside kagent
-  to govern AI agent interactions with external LLMs. Requires Gateway API CRDs.
-displayName: Agentgateway
+  Agentgateway is the AI-focused gateway from kgateway.dev that provides security,
+  observability, and traffic management for AI/LLM workloads. Works alongside
+  kagent to govern AI agent interactions with external LLMs. Requires Gateway API CRDs.
+dependencies: []
 icon: ""
 licensing:
-- Pro
-- Ultimate
+  - Pro
+  - Ultimate
 overview: |
-  Agentgateway enables Kubernetes-native AI gateway capabilities - security enforcement,
-  observability, and traffic management for LLM workloads. Pairs with kagent for
-  comprehensive AI infrastructure.
+  **What it is** — Agentgateway is a Kubernetes-native AI gateway that sits between your AI agents and LLM providers, adding security, observability, and traffic control.
+
+  **Highlights**
+  - Security and policy enforcement for LLM traffic; works with kagent for agent governance
+  - Observability and traffic management for AI workloads
+  - Built on Gateway API; deploy in front of vLLM, OpenAI-compatible APIs, and other LLM backends
+
+  **Documentation:** [kgateway.dev](https://kgateway.dev) | **Project:** [kgateway.dev](https://kgateway.dev)
 scope:
-- workspace
-- project
+  - workspace
+  - project
 supportLink: https://kgateway.dev
+type: custom

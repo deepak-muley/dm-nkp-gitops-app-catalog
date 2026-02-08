@@ -1,15 +1,31 @@
-schema: "catalog.nkp.nutanix.com/v1/application-metadata"
+schema: catalog.nkp.nutanix.com/v1/application-metadata
 displayName: Centralized OpenCost
-description: OpenCost on the management cluster with UI disabled (install on mgmt; install opencost on workload clusters for per-cluster UI). No OpenCost-to-OpenCost connection—see docs/OPENCOST-MULTICLUSTER.md.
+allowMultipleInstances: false
 category:
+  - dm-nkp-gitops-app-catalog
   - monitoring
+  - cost
+description: |
+  OpenCost on the management cluster with UI disabled. Deploy this on the management
+  cluster and run OpenCost (with UI) on workload clusters for per-cluster dashboards.
+  See docs/OPENCOST-MULTICLUSTER.md for multi-cluster setup.
 dependencies: []
 scope:
   - workspace
 certifications:
   - qualified
+icon: https://raw.githubusercontent.com/opencost/opencost-website/main/static/img/logo.png
 licensing:
   - Pro
   - Ultimate
-icon: https://raw.githubusercontent.com/opencost/opencost-website/main/static/img/logo.png
+overview: |
+  **What it is** — Centralized OpenCost runs the cost-collection backend on the management cluster without the UI, for environments where you run OpenCost with UI on each workload cluster.
+
+  **Highlights**
+  - Single cost backend on the management cluster; no OpenCost-to-OpenCost connection required
+  - UI and per-cluster views remain on workload clusters
+  - Same cost allocation and Prometheus integration as OpenCost
+
+  **Documentation:** [OpenCost docs](https://opencost.io/docs/) | **Project:** [GitHub](https://github.com/opencost/opencost)
 supportLink: https://opencost.io/docs/
+type: custom

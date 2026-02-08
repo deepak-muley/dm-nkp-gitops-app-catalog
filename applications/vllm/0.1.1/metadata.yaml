@@ -1,16 +1,29 @@
 schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: vLLM
 allowMultipleInstances: true
 category:
+  - dm-nkp-gitops-app-catalog
   - artificial-intelligence
   - ai-ml
-description: vLLM is a high-throughput, memory-efficient inference and serving engine for large language models (LLMs), offering an OpenAI-compatible API for chat completions, embeddings, and more.
-displayName: vLLM
+description: |
+  vLLM is a high-throughput, memory-efficient inference and serving engine for large language
+  models (LLMs), offering an OpenAI-compatible API for chat completions, embeddings, and more.
+dependencies: []
 icon: https://raw.githubusercontent.com/vllm-project/media-kit/main/vLLM-Logo.svg
 licensing:
   - Pro
   - Ultimate
-overview: Deploy open-source LLMs with an OpenAI-compatible API on Kubernetes. Supports models like Llama, Mistral, and others with high throughput and low latency.
+overview: |
+  **What it is** — vLLM is a high-performance inference server for large language models (LLMs) with an OpenAI-compatible API, deployable on Kubernetes for production workloads.
+
+  **Highlights**
+  - OpenAI-compatible API (chat completions, embeddings, function calling)
+  - High throughput and low latency via PagedAttention and continuous batching
+  - Support for popular models (Llama, Mistral, Qwen, etc.) with GPU and multi-GPU
+  - Easy integration with existing OpenAI-based applications
+
+  **Documentation:** [vLLM docs](https://docs.vllm.ai/) | **Project:** [GitHub](https://github.com/vllm-project/vllm)
 scope:
   - project
 supportLink: https://docs.vllm.ai/
----
+type: custom

@@ -1,0 +1,20 @@
+---
+description: Use NKP platform documentation for Nutanix Kubernetes Platform–specific information
+alwaysApply: true
+---
+
+# NKP Documentation Reference
+
+When answering questions or making decisions about **Nutanix Kubernetes Platform (NKP)**–specific behavior, APIs, concepts, or catalog/platform integration:
+
+- **Primary reference**: Use the NKP platform documentation at:
+  **`/Users/deepak/Downloads/Nutanix-Kubernetes-Platform-v2_17.pdf`**
+
+Consult this document for:
+
+- NKP platform concepts, architecture, and terminology
+- Catalog, app deployment, or NKP UI expectations
+- NKP-specific APIs, CRDs, or integration points
+- Version-specific behavior (e.g., v2.17)
+
+When the user asks for NKP-specific info or when implementation details depend on NKP behavior, prefer information from this PDF over generic Kubernetes or third-party docs.
