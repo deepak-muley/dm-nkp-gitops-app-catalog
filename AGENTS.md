@@ -10,9 +10,11 @@ NKP (Nutanix Kubernetes Platform) custom app catalog. Applications are Flux/Kust
 
 | Action | Command |
 |--------|---------|
-| **Workflow (all-in-one)** | `./catalog-workflow.sh <add-app\|validate\|add-tests\|build-push\|all>` |
+| **Workflow (all-in-one)** | `./catalog-workflow.sh <add-app\|validate\|add-tests\|build-push\|all\|check-versions\|ci-local>` |
 | Add app (OCI Helm chart) | `./catalog-workflow.sh add-app --appname X --version Y --ocirepo oci://...` |
+| Check latest versions | `./catalog-workflow.sh check-versions --appname X` or `--all` (recommends add-app commands) |
 | Validate catalog | `./catalog-workflow.sh validate` |
+| Run CI locally (validate + apptests) | `./catalog-workflow.sh ci-local` |
 | Add test placeholders | `./catalog-workflow.sh add-tests --appname X` or `--all` |
 | Build and push bundle | `./catalog-workflow.sh build-push --tag v0.1.0` |
 | Validate + build-push | `./catalog-workflow.sh all --tag v0.1.0` |

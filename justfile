@@ -4,6 +4,12 @@
 
 _repo_root := justfile_directory()
 _apptests_dir := _repo_root + "/apptests"
+# Apptests run Kind + Flux + app deploy; cluster bring-up (e.g. MetalLB) can be slow
+_apptests_timeout := "45m"
+
+# Run same steps as CI locally: validate then apptests (see docs/TEST-CI-LOCALLY.md)
+ci-local:
+    cd "{{ _repo_root }}" && ./catalog-workflow.sh ci-local
 
 # Run all apptests (Ginkgo/Kind integration tests)
 # Requires: apptests/ with go.mod, full setup per docs/APP-TESTS-GUIDE.md
@@ -15,9 +21,9 @@ apptests:
         echo "apptests/go.mod not found. Run setup per docs/APP-TESTS-GUIDE.md"
         exit 1
     fi
-    go test ./suites/ -v
+    go test ./suites/ -v -timeout "{{ _apptests_timeout }}"
 
-# Run apptests for a specific app
+# Run apptests for a specific app (filters by Ginkgo label, e.g. Label("podinfo"))
 # Usage: just apptests-app podinfo
 apptests-app app:
     #!/usr/bin/env bash
@@ -27,7 +33,21 @@ apptests-app app:
         echo "apptests/go.mod not found. Run setup per docs/APP-TESTS-GUIDE.md"
         exit 1
     fi
-    go test ./suites/ -v -run "{{ app }}"
+    echo "Running apptests for app: {{ app }}"
+    go test ./suites/ -v -timeout "{{ _apptests_timeout }}" -ginkgo.label-filter="{{ app }}"
+
+# Run apptests with a Ginkgo label filter (e.g. "install", "upgrade", "podinfo && install")
+# Usage: just apptests-label "install"   |  just apptests-label "podinfo && upgrade"
+apptests-label label_filter:
+    #!/usr/bin/env bash
+    set -e
+    cd "{{ _apptests_dir }}"
+    if [ ! -f go.mod ]; then
+        echo "apptests/go.mod not found. Run setup per docs/APP-TESTS-GUIDE.md"
+        exit 1
+    fi
+    echo "Running apptests with label filter: {{ label_filter }}"
+    go test ./suites/ -v -timeout "{{ _apptests_timeout }}" -ginkgo.label-filter='{{ label_filter }}'
 
 # Run apptests with Ginkgo label filter (install tests only)
 apptests-install:
@@ -49,7 +69,7 @@ apptests-upgrade:
         echo "apptests/go.mod not found. Run setup per docs/APP-TESTS-GUIDE.md"
         exit 1
     fi
-    go test ./suites/ -v -ginkgo.label-filter="upgrade"
+    go test ./suites/ -v -timeout "{{ _apptests_timeout }}" -ginkgo.label-filter="upgrade"
 
 # Ensure apptests dependencies are tidy
 apptests-tidy:

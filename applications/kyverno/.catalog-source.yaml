@@ -1,0 +1,5 @@
+# Source for check-versions: chart is pulled from this Helm repo, then pushed to OCI.
+# New versions are published here; check-versions uses this to recommend add-app.
+helmrepo: kyverno/kyverno
+helmrepoUrl: https://kyverno.github.io/kyverno/
+ocipush: oci://ghcr.io/deepak-muley/kyverno

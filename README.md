@@ -31,6 +31,7 @@ A custom app catalog for [Nutanix Kubernetes Platform (NKP)](https://www.nutanix
 | `./catalog-workflow.sh add-app --appname <name> --version <ver> --ocirepo oci://...` | Add app from OCI chart |
 | `./catalog-workflow.sh add-app --appname <name> --version <ver> --helmrepo <repo/chart> --ocipush oci://...` | Add app (pull from Helm repo, push to OCI) |
 | `./catalog-workflow.sh validate` | Validate catalog (nkp validate + OCI login) |
+| `./catalog-workflow.sh check-versions [--appname <name>\|--all]` | Check latest chart versions; recommend add-app commands |
 | `./catalog-workflow.sh build-push --tag <version>` | Build and push catalog bundle |
 | `./catalog-workflow.sh add-tests --appname <name>` | Create apptest placeholders |
 | `./catalog-workflow.sh test [--appname <app>] [--label install/upgrade]` | Run apptests |
@@ -54,11 +55,13 @@ Full list with add commands: [docs/ADD-APPLICATION-COMMANDS.md](docs/ADD-APPLICA
 | Doc | Description |
 |-----|-------------|
 | [docs/ADD-APPLICATION-COMMANDS.md](docs/ADD-APPLICATION-COMMANDS.md) | Commands for each application |
+| [docs/CATALOG-SOURCE.md](docs/CATALOG-SOURCE.md) | Per-app source metadata for Helm-repo → OCI apps (check-versions) |
 | [docs/CATALOG-WORKFLOW.md](docs/CATALOG-WORKFLOW.md) | catalog-workflow.sh usage |
 | [docs/REFERENCE.md](docs/REFERENCE.md) | NKP workflow, bundle push, helm values |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Full stack deployment order |
 | [docs/KUBEFLOW-CATALOG.md](docs/KUBEFLOW-CATALOG.md) | Adding Kubeflow components |
 | [docs/APP-TESTS-GUIDE.md](docs/APP-TESTS-GUIDE.md) | Ginkgo/Kind integration tests |
+| [docs/TEST-CI-LOCALLY.md](docs/TEST-CI-LOCALLY.md) | How to run CI steps locally |
 
 ## Structure
 
@@ -78,7 +81,7 @@ applications/<app>/<version>/
 ./catalog-workflow.sh test --appname podinfo
 ```
 
-Tests are specific to this catalog. See [apptests/README.md](apptests/README.md) and [docs/APP-TESTS-GUIDE.md](docs/APP-TESTS-GUIDE.md).
+Tests are specific to this catalog. **CI runs apptests on every push** (after validate). To run the same locally: `./catalog-workflow.sh ci-local`. See [docs/TEST-CI-LOCALLY.md](docs/TEST-CI-LOCALLY.md), [apptests/README.md](apptests/README.md), and [docs/APP-TESTS-GUIDE.md](docs/APP-TESTS-GUIDE.md).
 
 ## Pre-push validation
 

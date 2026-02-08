@@ -137,10 +137,29 @@ jobs:
       #   run: |
       #     nkp validate catalog-repository --repo-dir=.
 
+  apptests:
+    name: App Tests (Ginkgo/Kind)
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Run apptests
+        run: |
+          cd apptests
+          go mod download
+          go test ./suites/ -v -timeout 45m
+
   build:
     name: Build Catalog Bundle
     runs-on: ubuntu-latest
-    needs: validate
+    needs: [validate, apptests]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository
@@ -188,7 +207,7 @@ jobs:
   summary:
     name: Summary
     runs-on: ubuntu-latest
-    needs: [validate, build]
+    needs: [validate, apptests, build]
     if: always()
     steps:
       - name: Checkout repository
@@ -228,4 +247,5 @@ jobs:
           echo "## Build Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Validate: ${{ needs.validate.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Apptests: ${{ needs.apptests.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY

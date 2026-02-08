@@ -12,8 +12,11 @@
 #   add-tests   Create apptest placeholders for app(s)
 #   setup       Run setup.sh (ensure tools + go mod tidy for apptests)
 #   test        Run apptests (Ginkgo/Kind). Options: [--appname <app>] [--label install|upgrade]
-#   build-push  Build and push bundle (needs --tag)
-#   all         Run validate + build-push (needs --tag)
+#   build-push     Build and push bundle (needs --tag)
+#   all            Run validate + build-push (needs --tag)
+#   ci-local       Run CI workflow locally: validate then apptests (same as GitHub Actions)
+#   check-versions Check for latest chart versions; recommend add-app commands
+#                  Options: --appname <name> | --all
 #
 # Examples:
 #   ./catalog-workflow.sh add-app --appname podinfo --version 6.9.4 --ocirepo oci://ghcr.io/stefanprodan/charts/podinfo
@@ -27,6 +30,9 @@
 #   ./catalog-workflow.sh test --label install
 #   ./catalog-workflow.sh build-push --tag v0.1.0
 #   ./catalog-workflow.sh all --tag v0.1.0
+#   ./catalog-workflow.sh ci-local
+#   ./catalog-workflow.sh check-versions --all
+#   ./catalog-workflow.sh check-versions --appname podinfo
 #   ./catalog-workflow.sh add-app ... --force && ./catalog-workflow.sh validate
 
 set -e
@@ -41,6 +47,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ADD_APP_SCRIPT="${REPO_DIR}/scripts/add-application.sh"
 VALIDATE_SCRIPT="${REPO_DIR}/scripts/validate.sh"
 BUILD_PUSH_SCRIPT="${REPO_DIR}/scripts/build-and-push.sh"
+CHECK_VERSIONS_SCRIPT="${REPO_DIR}/scripts/check-latest-versions.sh"
 APPTESTS_DIR="${REPO_DIR}/apptests"
 
 # --- Subcommand implementations ---
@@ -99,21 +106,33 @@ cmd_test() {
         return 1
     fi
 
+    if [[ -n "$appname" ]]; then
+        echo -e "${GREEN}Running apptests for app: ${appname}${NC} (Ginkgo label filter)"
+    fi
+    if [[ -n "$label" ]]; then
+        echo -e "${GREEN}Label filter: ${label}${NC} (install | upgrade | or custom)"
+    fi
+
+    # Build Ginkgo label filter: optional app + optional label (combined with &&)
+    local ginkgo_label=""
+    if [[ -n "$appname" && -n "$label" ]]; then
+        ginkgo_label="${appname} && ${label}"
+    elif [[ -n "$appname" ]]; then
+        ginkgo_label="$appname"
+    elif [[ -n "$label" ]]; then
+        ginkgo_label="$label"
+    fi
+
     if command -v just >/dev/null 2>&1; then
-        if [[ -n "$appname" ]]; then
-            just apptests-app "$appname"
-        elif [[ "$label" == "install" ]]; then
-            just apptests-install
-        elif [[ "$label" == "upgrade" ]]; then
-            just apptests-upgrade
+        if [[ -n "$ginkgo_label" ]]; then
+            just apptests-label "$ginkgo_label"
         else
             just apptests
         fi
     else
         echo -e "${YELLOW}just not found, using go test directly${NC}"
-        local args=(-v)
-        [[ -n "$appname" ]] && args+=(-run "$appname")
-        [[ -n "$label" ]] && args+=(-ginkgo.label-filter="$label")
+        local args=(-v -timeout 45m)
+        [[ -n "$ginkgo_label" ]] && args+=(-ginkgo.label-filter="$ginkgo_label")
         (cd "$APPTESTS_DIR" && go test ./suites/ "${args[@]}")
     fi
 }
@@ -243,6 +262,19 @@ cmd_all() {
     cmd_build_push --tag "$tag"
 }
 
+cmd_ci_local() {
+    echo -e "${BLUE}=== ci-local (validate + apptests, same as CI) ===${NC}"
+    cmd_validate
+    echo ""
+    cmd_test "$@"
+}
+
+cmd_check_versions() {
+    echo -e "${BLUE}=== check-versions ===${NC}"
+    [[ -x "$CHECK_VERSIONS_SCRIPT" ]] || { echo -e "${RED}Missing $CHECK_VERSIONS_SCRIPT${NC}"; return 1; }
+    "$CHECK_VERSIONS_SCRIPT" "$@"
+}
+
 show_help() {
     echo "Catalog Workflow - Add app, validate, add tests, build & push"
     echo ""
@@ -266,8 +298,14 @@ show_help() {
     echo "  build-push   Build and push catalog bundle"
     echo "               Options: --tag <version> (e.g. v0.1.0)"
     echo ""
-    echo "  all          Run validate + build-push"
-    echo "               Options: --tag <version>"
+    echo "  all            Run validate + build-push"
+    echo "                 Options: --tag <version>"
+    echo ""
+    echo "  ci-local       Run CI workflow locally (validate then apptests)"
+    echo "                 Options: [--appname <app>] [--label install|upgrade] (passed to test)"
+    echo ""
+    echo "  check-versions Check for latest chart versions; recommend add-app commands"
+    echo "                 Options: --appname <name> | --all"
     echo ""
     echo "Examples:"
     echo "  $0 add-app --appname podinfo --version 6.9.4 --ocirepo oci://ghcr.io/stefanprodan/charts/podinfo"
@@ -310,6 +348,12 @@ case "$COMMAND" in
         ;;
     all)
         cmd_all "$@"
+        ;;
+    ci-local)
+        cmd_ci_local "$@"
+        ;;
+    check-versions)
+        cmd_check_versions "$@"
         ;;
     -h|--help|help|"")
         show_help

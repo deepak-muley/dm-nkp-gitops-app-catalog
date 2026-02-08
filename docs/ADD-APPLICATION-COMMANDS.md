@@ -90,6 +90,8 @@ These charts are on Helm repos. Use `--helmrepo` and `--ocipush` so the script p
 
 **Note:** If the Helm repo is already added (`helm repo add` + `helm repo update`), you can omit `--helmrepo-url`.
 
+For these apps, **new versions appear in the upstream Helm repo**, not in your OCI registry. To have `./catalog-workflow.sh check-versions` check the Helm repo and recommend add-app commands, add a **`.catalog-source.yaml`** in each app folder — see [docs/CATALOG-SOURCE.md](CATALOG-SOURCE.md).
+
 ---
 
 ## Applications Using Kustomize (--kustomize)
