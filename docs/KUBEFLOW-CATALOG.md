@@ -21,6 +21,8 @@ Use `./catalog-workflow.sh add-app` (or `./catalog-workflow.sh add-app`) with th
 | **KServe** | 0.16.0 | `./catalog-workflow.sh add-app --appname kserve --version 0.16.0 --ocirepo oci://ghcr.io/kserve/charts/kserve` |
 | **KServe CRD** | 0.16.0 | `./catalog-workflow.sh add-app --appname kserve-crd --version 0.16.0 --ocirepo oci://ghcr.io/kserve/charts/kserve-crd` |
 
+**Note:** GHCR publishes these charts with a `v` prefix (e.g. `v0.16.0`). After add-app, set `spec.ref.tag` to `v0.16.0` in each app's `helmrelease/helmrelease.yaml` or validation will fail with MANIFEST_UNKNOWN.
+
 ### Kustomize — [kubeflow/manifests](https://github.com/kubeflow/manifests)
 
 | Component | Version | Path | Command |

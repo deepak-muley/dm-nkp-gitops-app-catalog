@@ -1,0 +1,23 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+- ai
+- infrastructure
+dependencies: []
+description: |
+  Kustomize-based deployment from https://github.com/kubeflow/manifests.
+  Path: ./applications/katib/upstream/installs/katib-with-kubeflow
+  Ref: master
+  Update metadata.yaml with detailed description.
+displayName: Katib
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: |
+  Kustomize-based GitOps deployment. Manifests fetched from Git and applied via Flux Kustomization.
+  Update metadata.yaml with detailed overview.
+scope:
+- workspace
+- project
+supportLink: https://github.com/kubeflow/katib

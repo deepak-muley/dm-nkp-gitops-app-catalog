@@ -6,8 +6,13 @@ k8s_versions:
 # use strict validation (reject unknown fields in resources)
 strict: true
 
-# types to be skipped (e.g. certmanager.k8s.io/v1, or certmanager.k8s.io/v1/Certificate)
-skip_types: []
+# types to be skipped (e.g. cert-manager.io/v1/Certificate, or group/version/Kind)
+# KServe and cert-manager CRs rendered by Helm charts - skip when CRD schemas not loaded
+skip_types:
+  - cert-manager.io/v1/Certificate
+  - cert-manager.io/v1/Issuer
+  - serving.kserve.io/v1alpha1/ClusterServingRuntime
+  - serving.kserve.io/v1alpha1/ClusterStorageContainer
 
 # load additional CRDs (URLs of CRD yaml files)
 additional_crds: []
