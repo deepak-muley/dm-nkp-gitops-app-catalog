@@ -2,7 +2,7 @@
 # The Helm chart renders cert-manager and KServe CRs; skip these types when
 # CRD schemas are not loaded so validation does not fail with "unknown type".
 k8s_versions:
-  - 1.33.0
+  - 1.34.0
 
 strict: true
 

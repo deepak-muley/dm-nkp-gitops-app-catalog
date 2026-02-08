@@ -54,6 +54,7 @@ Full list with add commands: [docs/ADD-APPLICATION-COMMANDS.md](docs/ADD-APPLICA
 
 | Doc | Description |
 |-----|-------------|
+| [docs/CATALOG-APPS-GUIDE.md](docs/CATALOG-APPS-GUIDE.md) | **Learn each app** — what it is, what it does, UI/dashboard, how to use it |
 | [docs/ADD-APPLICATION-COMMANDS.md](docs/ADD-APPLICATION-COMMANDS.md) | Commands for each application |
 | [docs/CATALOG-SOURCE.md](docs/CATALOG-SOURCE.md) | Per-app source metadata for Helm-repo → OCI apps (check-versions) |
 | [docs/CATALOG-WORKFLOW.md](docs/CATALOG-WORKFLOW.md) | catalog-workflow.sh usage |

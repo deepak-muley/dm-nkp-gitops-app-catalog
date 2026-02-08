@@ -8,6 +8,7 @@
 #   add-app     Add application (Helm or Kustomize):
 #               Helm: --appname, --version, and either --ocirepo or --helmrepo+--ocipush
 #               Kustomize: --appname, --version, --kustomize, --gitrepo, --path [--ref]
+#               Use --skip-validate when adding multiple apps; run validate once at the end.
 #   validate    Validate catalog (./validate.sh)
 #   add-tests   Create apptest placeholders for app(s)
 #   setup       Run setup.sh (ensure tools + go mod tidy for apptests)
@@ -381,7 +382,7 @@ show_help() {
     echo "  $0 build-push --tag v0.1.0"
     echo "  $0 all --tag v0.1.0"
     echo ""
-    echo "Run multiple: $0 add-app ... && $0 validate && $0 build-push --tag v0.1.0"
+    echo "Run multiple (validate once at end): $0 add-app ... --skip-validate && $0 add-app ... --skip-validate && $0 validate && $0 build-push --tag v0.1.0"
 }
 
 # --- Main ---

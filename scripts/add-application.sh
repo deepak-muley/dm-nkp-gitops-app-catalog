@@ -29,6 +29,7 @@ KUSTOMIZE=false
 GITREPO=""
 KUSTOMIZE_PATH=""
 GITREF="main"
+SKIP_VALIDATE=false
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -77,6 +78,10 @@ while [[ $# -gt 0 ]]; do
             FORCE=true
             shift
             ;;
+        --skip-validate)
+            SKIP_VALIDATE=true
+            shift
+            ;;
         -h|--help)
             echo "Usage: $0 --appname <name> --version <version> [options]"
             echo ""
@@ -97,6 +102,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --path          Path within repo to kustomization.yaml (required with --kustomize)"
             echo "  --ref           Git ref: branch or tag (default: main)"
             echo "  --force         Skip confirmation prompt if application directory exists"
+            echo "  --skip-validate Skip full catalog validation after add (run validate once after adding all apps)"
             echo ""
             echo "Examples:"
             echo "  $0 --appname podinfo --version 6.9.4 --ocirepo oci://ghcr.io/stefanprodan/charts/podinfo"
@@ -504,15 +510,19 @@ echo -e "${GREEN}✓ Metadata.yaml updated with basic information${NC}"
 echo -e "${YELLOW}  Note: You may want to manually update metadata.yaml with more detailed information${NC}"
 echo ""
 
-# Step 4: Validate the catalog repository
-echo -e "${YELLOW}Step 4: Validating catalog repository...${NC}"
-"$NKP_CMD" validate catalog-repository --repo-dir="${REPO_DIR}"
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Validation failed!${NC}"
-    echo -e "${YELLOW}Please check the errors above and fix them manually${NC}"
-    exit 1
+# Step 4: Validate the catalog repository (unless --skip-validate)
+if [ "$SKIP_VALIDATE" = true ]; then
+    echo -e "${YELLOW}Step 4: Skipping validation (--skip-validate). Run ./catalog-workflow.sh validate after adding all apps.${NC}"
+else
+    echo -e "${YELLOW}Step 4: Validating catalog repository...${NC}"
+    "$NKP_CMD" validate catalog-repository --repo-dir="${REPO_DIR}"
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Validation failed!${NC}"
+        echo -e "${YELLOW}Please check the errors above and fix them manually${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓ Validation passed${NC}"
 fi
-echo -e "${GREEN}✓ Validation passed${NC}"
 echo ""
 
 echo -e "${BLUE}========================================${NC}"

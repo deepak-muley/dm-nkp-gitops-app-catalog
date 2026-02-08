@@ -2,6 +2,8 @@
 
 Detailed reference for building, pushing, and importing NKP catalog bundles. For quick commands, see [README](../README.md).
 
+To **learn what each app is, what it does, whether it has a UI, and how to use it**, see [CATALOG-APPS-GUIDE.md](CATALOG-APPS-GUIDE.md).
+
 ## Prerequisites
 
 - [nkp](https://github.com/nutanix-cloud-native/nkp) CLI (or `./nkp` in repo)

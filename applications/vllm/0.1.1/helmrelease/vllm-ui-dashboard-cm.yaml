@@ -1,15 +1,15 @@
-# Dashboard ConfigMap for NKP/Kommander UI — links to HyperDX (ClickStack UI).
+# Dashboard ConfigMap for NKP/Kommander UI — links to vLLM API/docs.
 # See: https://github.com/nutanix-cloud-native/nkp-nutanix-product-catalog/blob/release-2.x/applications/nutanix-ai/2.5.0/helmreleases/nai-ui-dashboard-cm.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: clickstack-ui
+  name: vllm-ui
   namespace: ${workspaceNamespace}
   labels:
-    "kommander.d2iq.io/application": "clickstack"
+    "kommander.d2iq.io/application": "vllm"
   annotations:
     "kustomize.toolkit.fluxcd.io/ssa": "Merge"
 data:
-  name: "ClickStack (HyperDX)"
-  docsLink: "https://clickhouse.com/docs/use-cases/observability/clickstack/overview"
-  version: "1.1.1"
+  name: "vLLM"
+  docsLink: "https://docs.vllm.ai/"
+  version: "0.1.1"

@@ -1,0 +1,20 @@
+# Bloodhound config for Slurm 1.0.0
+# The Helm chart renders Slurm CRs (Controller, RestApi, NodeSet); skip these types when
+# CRD schemas are not loaded so validation does not fail with "unknown type".
+k8s_versions:
+  - 1.34.0
+
+strict: true
+
+# Types rendered by the Slurm chart that are not in the default K8s schema
+skip_types:
+  - slinky.slurm.net/v1beta1/Controller
+  - slinky.slurm.net/v1beta1/RestApi
+  - slinky.slurm.net/v1beta1/NodeSet
+
+additional_crds: []
+
+substitution_vars:
+  releaseNamespace: kommander
+  releaseName: slurm
+  workspaceNamespace: workspace

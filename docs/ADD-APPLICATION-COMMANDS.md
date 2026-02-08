@@ -27,6 +27,8 @@ Reference for recreating this catalog from scratch using `./catalog-workflow.sh 
 
 Use `--force` to overwrite existing application directories without confirmation.
 
+Use **`--skip-validate`** when adding multiple apps so that full catalog validation is not run after each add; run `./catalog-workflow.sh validate` once after adding all apps to avoid long delays.
+
 **Workflow script:** `./catalog-workflow.sh` orchestrates add-app, validate, add-tests, build-push. Use `./catalog-workflow.sh --help` for all options.
 
 ---
@@ -123,7 +125,7 @@ For Kubeflow-style Kustomize-based deployments (GitRepository + Flux Kustomizati
 | **Kubeflow Pipelines** | 2.15.0 | `./catalog-workflow.sh add-app --appname kubeflow-pipelines --version 2.15.0 --kustomize --gitrepo https://github.com/kubeflow/manifests --path ./applications/pipeline/upstream/env/cert-manager/platform-agnostic-multi-user --ref master --force` |
 | **Jupyter Notebook Controller** | 1.10.0 | `./catalog-workflow.sh add-app --appname jupyter-notebook-controller --version 1.10.0 --kustomize --gitrepo https://github.com/kubeflow/manifests --path ./applications/jupyter/notebook-controller/upstream/overlays/kubeflow --ref master --force` |
 | **Training Operator** | 1.9.2 | `./catalog-workflow.sh add-app --appname training-operator --version 1.9.2 --kustomize --gitrepo https://github.com/kubeflow/manifests --path ./applications/training-operator/upstream/overlays/kubeflow --ref master --force` |
-| **Kubeflow Model Registry** | 0.3.6 | `./catalog-workflow.sh add-app --appname kubeflow-model-registry --version 0.3.6 --kustomize --gitrepo https://github.com/kubeflow/manifests --path ./applications/model-registry/upstream --ref master --force` |
+| **Kubeflow Model Registry** | 0.3.6 | `./catalog-workflow.sh add-app --appname kubeflow-model-registry --version 0.3.6 --kustomize --gitrepo https://github.com/kubeflow/model-registry --path ./manifests/kustomize/overlays/db --ref v0.3.6 --force` — Uses standalone [kubeflow/model-registry](https://github.com/kubeflow/model-registry) repo (avoids manifests options/istio validation error). |
 | **TensorBoard Controller** | 1.10.0 | `./catalog-workflow.sh add-app --appname tensorboard-controller --version 1.10.0 --kustomize --gitrepo https://github.com/kubeflow/manifests --path ./applications/tensorboard/tensorboard-controller/upstream/overlays/kubeflow --ref master --force` |
 | **Kubeflow Central Dashboard** | 1.10.0 | `./catalog-workflow.sh add-app --appname kubeflow-central-dashboard --version 1.10.0 --kustomize --gitrepo https://github.com/kubeflow/manifests --path ./applications/centraldashboard/overlays/oauth2-proxy --ref master --force` |
 | **Katib** | 0.19.0 | (already in catalog; alternative path) `./applications/katib/upstream/installs/katib-with-kubeflow` — see [KUBEFLOW-CATALOG.md](KUBEFLOW-CATALOG.md). |
