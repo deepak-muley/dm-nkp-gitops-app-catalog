@@ -1,0 +1,28 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - infrastructure
+description: |
+  SchedMD Slinky Kubernetes operator for running Slurm clusters on K8s. Enables
+  Slurm-style job scheduling and GPU sharing for HPC and ML training. Install slurm-operator-crds first.
+displayName: Slurm Operator
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — The Slurm Operator (Slinky) runs Slurm workload manager on Kubernetes, combining Slurm scheduling with K8s orchestration for HPC and ML training.
+
+  **Highlights**
+  - Official SchedMD/Slinky operator; CRDs for cluster lifecycle, GPU support, accounting
+  - Fault tolerance via Kubernetes; share GPU capacity between Slurm and K8s workloads
+  - Install slurm-operator-crds first; requires cert-manager
+
+  **Documentation:** [Slinky Slurm Operator](https://slinky.schedmd.com/projects/slurm-operator) | **Project:** [slinkyproject/slurm-operator](https://github.com/slinkyproject/slurm-operator)
+scope:
+  - workspace
+  - project
+supportLink: https://slinky.schedmd.com/projects/slurm-operator
+type: custom

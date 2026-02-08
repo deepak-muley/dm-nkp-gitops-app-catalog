@@ -1,0 +1,28 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - infrastructure
+description: |
+  Helm chart to deploy a Slurm cluster on Kubernetes (Slinky). Install slurm-operator-crds
+  and slurm-operator first. Use for HPC and large-scale ML training jobs.
+displayName: Slurm
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — This chart deploys a Slurm cluster on Kubernetes using the Slurm Operator (Slinky). Run Slurm jobs with K8s-managed nodes and storage.
+
+  **Highlights**
+  - Deploy controller, worker, and login nodes; GPU support
+  - Requires slurm-operator-crds and slurm-operator to be installed first
+  - Part of the Slinky project (SchedMD)
+
+  **Documentation:** [Slinky Slurm Operator](https://slinky.schedmd.com/projects/slurm-operator) | **Project:** [slinkyproject/slurm-operator](https://github.com/slinkyproject/slurm-operator)
+scope:
+  - workspace
+  - project
+supportLink: https://slinky.schedmd.com/projects/slurm-operator
+type: custom

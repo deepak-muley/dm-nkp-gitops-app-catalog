@@ -1,0 +1,29 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - artificial-intelligence
+  - infrastructure
+dependencies: []
+description: |
+  Training Operator runs distributed ML training (PyTorch, TensorFlow, XGBoost, etc.)
+  on Kubernetes via custom resources. Part of Kubeflow; deploys via Flux from kubeflow/manifests.
+displayName: Training Operator
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — The Kubeflow Training Operator provides Kubernetes CRDs and controllers for distributed training jobs (PyTorchJob, TFJob, XGBoostJob, etc.).
+
+  **Highlights**
+  - Native K8s APIs for training; works with Katib and Pipelines
+  - Multi-framework support; GPU and multi-node training
+  - Part of the Kubeflow ecosystem
+
+  **Documentation:** [Kubeflow Training Operator](https://github.com/kubeflow/training-operator) | **Project:** [kubeflow/manifests](https://github.com/kubeflow/manifests)
+scope:
+  - workspace
+  - project
+supportLink: https://github.com/kubeflow/training-operator

@@ -1,0 +1,29 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - artificial-intelligence
+  - infrastructure
+dependencies: []
+description: |
+  Jupyter Notebook Controller runs Jupyter notebooks on Kubernetes. Standard for
+  data scientists and ML devs; part of Kubeflow, deploys via Flux from kubeflow/manifests.
+displayName: Jupyter Notebook Controller
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — The Jupyter Notebook Controller lets you spawn and manage Jupyter notebooks as Kubernetes resources (Notebook CRD).
+
+  **Highlights**
+  - Run notebooks on the cluster with configurable CPU/memory/GPU
+  - Part of Kubeflow; integrates with Central Dashboard and Pipelines
+  - GitOps-friendly via Flux Kustomization
+
+  **Documentation:** [Kubeflow Jupyter](https://www.kubeflow.org/docs/components/notebooks/) | **Project:** [kubeflow/manifests](https://github.com/kubeflow/manifests)
+scope:
+  - workspace
+  - project
+supportLink: https://www.kubeflow.org/docs/components/notebooks/

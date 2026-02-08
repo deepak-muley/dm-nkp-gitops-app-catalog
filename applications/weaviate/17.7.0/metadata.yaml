@@ -1,0 +1,15 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+- general
+description: ""
+displayName: Weaviate
+icon: ""
+licensing:
+- Pro
+- Ultimate
+overview: ""
+scope:
+- project
+supportLink: https://github.com/weaviate/weaviate
+---

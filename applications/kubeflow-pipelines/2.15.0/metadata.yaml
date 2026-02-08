@@ -1,0 +1,29 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - artificial-intelligence
+  - infrastructure
+dependencies: []
+description: |
+  Kubeflow Pipelines runs end-to-end ML pipelines (train, tune, serve) with experiments
+  and recurring runs. Kubernetes-native; deploys via Flux from kubeflow/manifests.
+displayName: Kubeflow Pipelines
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — Kubeflow Pipelines lets you build and run portable, scalable ML pipelines on Kubernetes with a full UI and API.
+
+  **Highlights**
+  - End-to-end pipelines (data → train → tune → serve)
+  - Experiments, recurring runs, and artifact tracking
+  - Part of the Kubeflow ecosystem; works with Katib, KServe, Training Operator
+
+  **Documentation:** [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/) | **Project:** [kubeflow/manifests](https://github.com/kubeflow/manifests)
+scope:
+  - workspace
+  - project
+supportLink: https://www.kubeflow.org/docs/components/pipelines/

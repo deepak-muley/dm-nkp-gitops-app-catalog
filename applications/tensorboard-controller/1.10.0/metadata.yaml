@@ -1,0 +1,29 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - artificial-intelligence
+  - infrastructure
+dependencies: []
+description: |
+  TensorBoard Controller exposes TensorBoard for training run visualization on Kubernetes.
+  Part of Kubeflow; deploys via Flux from kubeflow/manifests.
+displayName: TensorBoard Controller
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — The TensorBoard Controller manages TensorBoard instances for visualizing ML training runs (metrics, graphs, histograms).
+
+  **Highlights**
+  - Kubernetes CRD for TensorBoard; pairs with Training Operator and Pipelines
+  - Part of the Kubeflow ecosystem
+  - GitOps deployment via Flux
+
+  **Documentation:** [Kubeflow TensorBoard](https://www.kubeflow.org/docs/components/tensorboard/) | **Project:** [kubeflow/manifests](https://github.com/kubeflow/manifests)
+scope:
+  - workspace
+  - project
+supportLink: https://www.kubeflow.org/docs/components/tensorboard/

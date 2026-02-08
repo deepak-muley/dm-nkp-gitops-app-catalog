@@ -1,0 +1,27 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - artificial-intelligence
+description: |
+  Open WebUI is a chat UI for OpenAI-compatible backends (vLLM, Ollama, etc.). Lets
+  devs and product try LLMs without writing code. Pairs with vLLM from this catalog.
+displayName: Open WebUI
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — Open WebUI (formerly Ollama WebUI) provides a chat interface for any OpenAI-compatible API, including vLLM and Ollama.
+
+  **Highlights**
+  - Drop-in chat UI; connect to vLLM or other backends via URL
+  - Multi-user, persistence, and optional auth
+  - Deploy from catalog and point to your vLLM service
+
+  **Documentation:** [Open WebUI](https://docs.openwebui.com/) | **Project:** [open-webui/open-webui](https://github.com/open-webui/open-webui)
+scope:
+  - project
+supportLink: https://docs.openwebui.com/
+type: custom

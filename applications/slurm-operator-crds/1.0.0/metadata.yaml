@@ -1,0 +1,28 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - ai-ml
+  - infrastructure
+description: |
+  CRDs for the Slurm Operator (Slinky). Install before slurm-operator and slurm cluster.
+  Enables running Slurm workload manager on Kubernetes for HPC and ML training.
+displayName: Slurm Operator CRDs
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — Custom resource definitions for the Slurm Operator (Slinky project). Required before installing the operator and Slurm cluster.
+
+  **Highlights**
+  - Part of SchedMD Slinky; run Slurm on Kubernetes
+  - Install first, then slurm-operator, then slurm chart for the cluster
+  - Requires cert-manager
+
+  **Documentation:** [Slinky Slurm Operator](https://slinky.schedmd.com/projects/slurm-operator) | **Project:** [slinkyproject/slurm-operator](https://github.com/slinkyproject/slurm-operator)
+scope:
+  - workspace
+  - project
+supportLink: https://slinky.schedmd.com/projects/slurm-operator
+type: custom
