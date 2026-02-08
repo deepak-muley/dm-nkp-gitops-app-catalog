@@ -12,6 +12,9 @@
 #   add-tests   Create apptest placeholders for app(s)
 #   setup       Run setup.sh (ensure tools + go mod tidy for apptests)
 #   test        Run apptests (Ginkgo/Kind). Options: [--appname <app>] [--label install|upgrade]
+#               [--catalog-apptests] run catalog-apptests only (all apps from applications/)
+#               [--all-suites] run both per-app suites and catalog-apptests
+#               Use -- to pass extra flags to go test (e.g. -- -ginkgo.v for more verbosity)
 #   build-push     Build and push bundle (needs --tag)
 #   all            Run validate + build-push (needs --tag)
 #   ci-local       Run CI workflow locally: validate then apptests (same as GitHub Actions)
@@ -49,6 +52,7 @@ VALIDATE_SCRIPT="${REPO_DIR}/scripts/validate.sh"
 BUILD_PUSH_SCRIPT="${REPO_DIR}/scripts/build-and-push.sh"
 CHECK_VERSIONS_SCRIPT="${REPO_DIR}/scripts/check-latest-versions.sh"
 APPTESTS_DIR="${REPO_DIR}/apptests"
+CATALOG_APPTESTS_DIR="${REPO_DIR}/catalog-apptests"
 
 # --- Subcommand implementations ---
 
@@ -92,10 +96,16 @@ cmd_setup() {
 cmd_test() {
     local appname=""
     local label=""
+    local templated_only=false
+    local all_suites=false
+    local extra_args=()
     while [[ $# -gt 0 ]]; do
         case $1 in
             --appname) appname="$2"; shift 2 ;;
             --label) label="$2"; shift 2 ;;
+            --templated|--catalog-apptests) templated_only=true; shift ;;
+            --all-suites) all_suites=true; shift ;;
+            --) shift; extra_args=("$@"); break ;;
             *) shift ;;
         esac
     done
@@ -106,14 +116,21 @@ cmd_test() {
         return 1
     fi
 
+    if [[ "$templated_only" == true ]]; then
+        echo -e "${GREEN}Suite: catalog-apptests only${NC} (all apps from applications/)"
+    elif [[ "$all_suites" == true ]]; then
+        echo -e "${GREEN}Suite: both (per-app suites + catalog-apptests)${NC}"
+    else
+        echo -e "${GREEN}Suite: per-app (suites/)${NC}"
+    fi
     if [[ -n "$appname" ]]; then
-        echo -e "${GREEN}Running apptests for app: ${appname}${NC} (Ginkgo label filter)"
+        echo -e "${GREEN}App filter: ${appname}${NC}"
     fi
     if [[ -n "$label" ]]; then
         echo -e "${GREEN}Label filter: ${label}${NC} (install | upgrade | or custom)"
     fi
 
-    # Build Ginkgo label filter: optional app + optional label (combined with &&)
+    # Ginkgo label: for templated suite use "appname=<name>", for suites use "<name>"
     local ginkgo_label=""
     if [[ -n "$appname" && -n "$label" ]]; then
         ginkgo_label="${appname} && ${label}"
@@ -122,18 +139,57 @@ cmd_test() {
     elif [[ -n "$label" ]]; then
         ginkgo_label="$label"
     fi
+    local templated_label=""
+    if [[ -n "$appname" ]]; then
+        templated_label="appname=${appname}"
+        [[ -n "$label" ]] && templated_label="${templated_label} && ${label}"
+    elif [[ -n "$label" ]]; then
+        templated_label="$label"
+    fi
 
-    if command -v just >/dev/null 2>&1; then
-        if [[ -n "$ginkgo_label" ]]; then
-            just apptests-label "$ginkgo_label"
-        else
-            just apptests
+    run_suite() {
+        local suite_path="$1"
+        local filter_label="$2"
+        (cd "$APPTESTS_DIR" && go test "$suite_path" -v -timeout 45m ${filter_label:+-ginkgo.label-filter="$filter_label"})
+    }
+
+    run_catalog_apptests() {
+        local filter_label="$1"
+        shift
+        (cd "$CATALOG_APPTESTS_DIR" && go test . -v -timeout 45m ${filter_label:+-ginkgo.label-filter="$filter_label"} "$@")
+    }
+
+    if [[ "$all_suites" == true ]]; then
+        run_suite "./suites/" "$ginkgo_label"
+        echo ""
+        run_catalog_apptests "$templated_label"
+        return 0
+    fi
+
+    if [[ "$templated_only" == true ]]; then
+        if [[ ! -f "${CATALOG_APPTESTS_DIR}/go.mod" ]]; then
+            echo -e "${RED}Error: catalog-apptests/go.mod not found${NC}"
+            return 1
         fi
+        if [[ ${#extra_args[@]} -gt 0 ]] || ! command -v just >/dev/null 2>&1; then
+            [[ ${#extra_args[@]} -gt 0 ]] && echo -e "${GREEN}Extra flags: ${extra_args[*]}${NC}"
+            run_catalog_apptests "$templated_label" "${extra_args[@]}"
+        elif [[ -n "$templated_label" ]]; then
+            just apptests-templated-label "$templated_label"
+        else
+            just apptests-templated
+        fi
+        return 0
+    fi
+
+    # Default: per-app suites only
+    if [[ ${#extra_args[@]} -gt 0 ]] || ! command -v just >/dev/null 2>&1; then
+        [[ ${#extra_args[@]} -gt 0 ]] && echo -e "${GREEN}Extra flags: ${extra_args[*]}${NC}"
+        run_suite "./suites/" "$ginkgo_label"
+    elif [[ -n "$ginkgo_label" ]]; then
+        just apptests-label "$ginkgo_label"
     else
-        echo -e "${YELLOW}just not found, using go test directly${NC}"
-        local args=(-v -timeout 45m)
-        [[ -n "$ginkgo_label" ]] && args+=(-ginkgo.label-filter="$ginkgo_label")
-        (cd "$APPTESTS_DIR" && go test ./suites/ "${args[@]}")
+        just apptests
     fi
 }
 
@@ -294,6 +350,8 @@ show_help() {
     echo ""
     echo "  test         Run apptests (Ginkgo/Kind integration tests)"
     echo "               Options: [--appname <app>] [--label install|upgrade]"
+    echo "               [--catalog-apptests] run catalog-apptests only (all apps from applications/)"
+    echo "               [--all-suites] run both per-app suites and catalog-apptests"
     echo ""
     echo "  build-push   Build and push catalog bundle"
     echo "               Options: --tag <version> (e.g. v0.1.0)"
@@ -316,6 +374,10 @@ show_help() {
     echo "  $0 test"
     echo "  $0 test --appname podinfo"
     echo "  $0 test --label install"
+    echo "  $0 test --catalog-apptests       # catalog-apptests only (all apps)"
+    echo "  $0 test --catalog-apptests --appname podinfo"
+    echo "  $0 test --all-suites             # run both suites"
+    echo "  $0 test -- -ginkgo.v            # extra verbosity (Ginkgo)"
     echo "  $0 build-push --tag v0.1.0"
     echo "  $0 all --tag v0.1.0"
     echo ""

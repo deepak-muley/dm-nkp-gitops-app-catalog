@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${releaseName}-config-defaults
+  namespace: ${releaseNamespace}
+data:
+  # Central: UI disabled; backend only for this cluster. No OpenCost-to-OpenCost connection; see docs/OPENCOST-MULTICLUSTER.md.
+  values.yaml: |-
+    opencost:
+      prometheus:
+        internal:
+          enabled: true
+      ui:
+        enabled: false
+      exporter:
+        image:
+          registry: ghcr.io
+          repository: opencost/opencost
+          tag: "1.118.0"
+        cloudProviderApiKey: ""
+        replicas: 1
+        persistence:
+          enabled: true
+          size: 10Gi
+        # Run without Prometheus (e.g. in test clusters); uses in-cluster data only.
+        collectorDataSource:
+          enabled: true

@@ -1,0 +1,25 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  podSubnet: "172.16.0.0/16"
+nodes:
+  - role: control-plane
+    extraMounts:
+    - hostPath: ./tmp-kind-hack-scripts
+      containerPath: /hack/scripts
+    kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"
+  - role: worker
+    extraMounts:
+    - hostPath: ./tmp-kind-hack-scripts
+      containerPath: /hack/scripts
+    kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"

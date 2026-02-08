@@ -1,0 +1,13 @@
+schema: "catalog.nkp.nutanix.com/v1/application-metadata"
+displayName: Centralized OpenCost
+description: OpenCost on the management cluster with UI disabled (install on mgmt; install opencost on workload clusters for per-cluster UI). No OpenCost-to-OpenCost connection—see docs/OPENCOST-MULTICLUSTER.md.
+category:
+  - monitoring
+dependencies: []
+scope:
+  - workspace
+certifications:
+  - qualified
+licensing:
+  - Apache-2.0
+supportLink: https://opencost.io/docs/

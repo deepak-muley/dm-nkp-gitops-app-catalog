@@ -19,7 +19,10 @@ NKP (Nutanix Kubernetes Platform) custom app catalog. Applications are Flux/Kust
 | Build and push bundle | `./catalog-workflow.sh build-push --tag v0.1.0` |
 | Validate + build-push | `./catalog-workflow.sh all --tag v0.1.0` |
 | Load credentials | `source .env.local` |
-| Run apptests (just) | `just apptests` \| `just apptests-app <name>` |
+| Run apptests | `./catalog-workflow.sh test` \| `./catalog-workflow.sh test --appname X` |
+| Run catalog-apptests (all apps) | `./catalog-workflow.sh test --templated` \| `./catalog-workflow.sh test --templated --appname X` |
+| Run both suites | `./catalog-workflow.sh test --all-suites` |
+| Run apptests (just) | `just apptests` \| `just apptests-templated` \| `just apptests-templated-app <name>` |
 
 ## Conventions
 
@@ -29,6 +32,7 @@ NKP (Nutanix Kubernetes Platform) custom app catalog. Applications are Flux/Kust
 4. **Two app patterns**:
    - **Helm-based** (default): OCIRepository + HelmRelease. Use `./catalog-workflow.sh add-app`.
    - **Job-based** (kagent): Flux Kustomization + Job. Copy from `applications/kagent/0.1.0/`.
+5. **Catalog apptests** (`catalog-apptests/` at repo root): No per-app test code. Add app with `add-app`; discovery picks it up. Run with `./catalog-workflow.sh test --templated`. See `catalog-apptests/README.md`.
 
 ## Structure
 

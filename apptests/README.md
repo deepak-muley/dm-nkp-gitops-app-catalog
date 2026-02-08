@@ -2,6 +2,13 @@
 
 Ginkgo/Kind integration tests for NKP catalog applications. Tests spin up a Kind cluster, install Flux, deploy each app via its HelmRelease, and verify the deployment succeeds.
 
+## Two ways to run apptests
+
+- **Per-app suite** (`suites/`, `appscenarios/`) — One test file and one scenario per app (e.g. `podinfo_test.go` + `appscenarios/podinfo.go`). Add a new app by implementing `AppScenario` and a `Describe` block.
+- **Catalog apptests** (`catalog-apptests/` at repo root) — A single template runs **install** (and **upgrade** when an app has ≥2 versions) for **every** app under `applications/`. No per-app code: discovery scans `applications/<name>/<version>/` and the common scenario applies the same install/upgrade flow. See [catalog-apptests/README.md](../catalog-apptests/README.md).
+
+Both suites can be run side by side. Existing apptests are unchanged.
+
 ## What Do Apptests Do?
 
 Apptests exercise the full deploy path for catalog applications:
@@ -17,6 +24,7 @@ Apptests exercise the full deploy path for catalog applications:
 |------|-------------|
 | **Install** | Deploy app from `applications/<app>/<version>/helmrelease`, verify HelmRelease Ready |
 | **Upgrade** | Install previous version → verify Ready → upgrade to latest → verify UpgradeSucceeded. **Requires at least two versions** of the app in `applications/<app>/` (e.g. podinfo has 6.9.3 and 6.9.4). |
+| **Multicluster** | Uses [kommander-applications environment](https://github.com/mesosphere/kommander-applications/blob/main/apptests/environment/environment.go) `ProvisionMultiCluster` + `InstallLatestFluxOnWorkload`; deploy app to workload cluster and verify there. Sample: **podinfo** (`suites/podinfo_multicluster_test.go`, `appscenarios/podinfo_multicluster.go`). Run with label `multicluster` or `podinfo && multicluster`. |
 
 ## Prerequisites
 
@@ -42,12 +50,15 @@ Tests are tagged with Ginkgo labels: **`podinfo`** (app name), **`install`**, **
 
 | Goal | catalog-workflow.sh | just | go test (from apptests/) |
 |------|----------------------|------|---------------------------|
-| **All tests** (install + upgrade, all apps) | `./catalog-workflow.sh test` | `just apptests` | `go test ./suites/ -v -timeout 45m` |
-| **One app** (install + upgrade) | `./catalog-workflow.sh test --appname podinfo` | `just apptests-app podinfo` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="podinfo"` |
-| **Install only** (all apps) | `./catalog-workflow.sh test --label install` | `just apptests-install` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="install"` |
-| **Upgrade only** (all apps) | `./catalog-workflow.sh test --label upgrade` | `just apptests-upgrade` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="upgrade"` |
+| **Per-app suite: all** (install + upgrade) | `./catalog-workflow.sh test` | `just apptests` | `go test ./suites/ -v -timeout 45m` |
+| **Per-app: one app** | `./catalog-workflow.sh test --appname podinfo` | `just apptests-app podinfo` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="podinfo"` |
+| **Catalog apptests: all apps** | `./catalog-workflow.sh test --templated` | `just apptests-templated` | `cd catalog-apptests && go test . -v -timeout 45m` |
+| **Catalog apptests: one app** | `./catalog-workflow.sh test --templated --appname podinfo` | `just apptests-templated-app podinfo` | `cd catalog-apptests && go test . -v -timeout 45m -ginkgo.label-filter="appname=podinfo"` |
+| **Catalog apptests: multicluster** (install each app on workload cluster) | `./catalog-workflow.sh test --templated --label multicluster` | `just apptests-templated-label multicluster` | `cd catalog-apptests && go test . -v -timeout 45m -ginkgo.label-filter="multicluster"` |
+| **Both suites** | `./catalog-workflow.sh test --all-suites` | (run `apptests` then `apptests-templated`) | — |
+| **Install only** (per-app) | `./catalog-workflow.sh test --label install` | `just apptests-install` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="install"` |
+| **Upgrade only** (per-app) | `./catalog-workflow.sh test --label upgrade` | `just apptests-upgrade` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="upgrade"` |
 | **One app, install only** | `./catalog-workflow.sh test --appname podinfo --label install` | `just apptests-label "podinfo && install"` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="podinfo && install"` |
-| **One app, upgrade only** | `./catalog-workflow.sh test --appname podinfo --label upgrade` | `just apptests-label "podinfo && upgrade"` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="podinfo && upgrade"` |
 | **Custom label** (if you add one) | `./catalog-workflow.sh test --label mylabel` | `just apptests-label "mylabel"` | `go test ./suites/ -v -timeout 45m -ginkgo.label-filter="mylabel"` |
 
 Ginkgo label expressions: use `&&` (and), `\|\|` (or), `!` (not), e.g. `"install || upgrade"` or `"podinfo && !upgrade"`.
@@ -56,13 +67,17 @@ Ginkgo label expressions: use `&&` (and), `\|\|` (or), `!` (not), e.g. `"install
 # Via catalog-workflow (from repo root)
 ./catalog-workflow.sh test
 ./catalog-workflow.sh test --appname podinfo
+./catalog-workflow.sh test --templated              # catalog-apptests (all apps)
+./catalog-workflow.sh test --templated --appname podinfo
+./catalog-workflow.sh test --all-suites            # both per-app and catalog-apptests
 ./catalog-workflow.sh test --label install
 ./catalog-workflow.sh test --label upgrade
-./catalog-workflow.sh test --appname podinfo --label install
 
 # Via justfile (from repo root)
 just apptests
 just apptests-app podinfo
+just apptests-templated
+just apptests-templated-app podinfo
 just apptests-install
 just apptests-upgrade
 just apptests-label "podinfo && install"
@@ -84,6 +99,8 @@ apptests/
 └── main.go
 ```
 
+The **catalog-apptests** suite lives in `catalog-apptests/` at repo root (separate Go module); see [catalog-apptests/README.md](../catalog-apptests/README.md).
+
 ## Adding Tests for New Apps
 
 1. Implement `AppScenario` in `appscenarios/<app>.go` (see [docs/APP-TESTS-GUIDE.md](../docs/APP-TESTS-GUIDE.md))
@@ -94,7 +111,26 @@ apptests/
 
 - **Default: cluster is deleted** after each test run. The suite’s `AfterEach` calls `env.Destroy(ctx)` so the Kind cluster (e.g. `kommanderapptest`) is torn down and doesn’t linger.
 - **Keep the cluster for debugging:** set `SKIP_CLUSTER_TEARDOWN=1` when running tests. The cluster will remain so you can inspect it with `kubectl` or `kind get clusters`. Remember to delete it when done: `kind delete cluster --name kommanderapptest`.
-- **Cluster name** — The name (e.g. `kommanderapptest`) is set by the test framework (kommander-applications/apptests), not by this repo. To use a different name you’d need to check whether the framework’s `environment.Env` or Provision API supports it.
+- **Cluster name** — Defaults to `kommanderapptest`; to use a custom name see [Custom Kind cluster name](#custom-kind-cluster-name) below.
+
+## Custom Kind cluster name
+
+The framework's [kind package](https://github.com/mesosphere/kommander-applications/blob/main/apptests/kind/kind.go) accepts a cluster name in `CreateCluster(ctx, name)` but uses `"kommanderapptest"` when `name` is empty. The environment package always calls it with `""`, so the name is not configurable without a small override.
+
+To use a **custom cluster name**:
+
+1. Set **`KIND_CLUSTER_NAME`** when running tests:
+   ```bash
+   export KIND_CLUSTER_NAME=my-nkp-test
+   ./catalog-workflow.sh test --templated
+   ```
+2. In **`apptests/go.mod`**, uncomment the replace line at the bottom so the `kind` package is taken from **`apptests/kindoverride`** (this repo includes it):
+   ```go
+   replace github.com/mesosphere/kommander-applications/apptests/kind => ./kindoverride
+   ```
+3. Run `cd apptests && go mod tidy`, then run the tests again. The override uses `os.Getenv("KIND_CLUSTER_NAME")` when the framework passes an empty name.
+
+Without the replace, `KIND_CLUSTER_NAME` has no effect.
 
 ## Troubleshooting
 

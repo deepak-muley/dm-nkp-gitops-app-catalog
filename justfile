@@ -4,6 +4,7 @@
 
 _repo_root := justfile_directory()
 _apptests_dir := _repo_root + "/apptests"
+_catalog_apptests_dir := _repo_root + "/catalog-apptests"
 # Apptests run Kind + Flux + app deploy; cluster bring-up (e.g. MetalLB) can be slow
 _apptests_timeout := "45m"
 
@@ -70,6 +71,44 @@ apptests-upgrade:
         exit 1
     fi
     go test ./suites/ -v -timeout "{{ _apptests_timeout }}" -ginkgo.label-filter="upgrade"
+
+# Run catalog-apptests (all apps under applications/ — no per-app test code)
+# Usage: just apptests-templated
+apptests-templated:
+    #!/usr/bin/env bash
+    set -e
+    cd "{{ _catalog_apptests_dir }}"
+    if [ ! -f go.mod ]; then
+        echo "catalog-apptests/go.mod not found."
+        exit 1
+    fi
+    go test . -v -timeout "{{ _apptests_timeout }}"
+
+# Run catalog-apptests for one app (label appname=<app>)
+# Usage: just apptests-templated-app podinfo
+apptests-templated-app app:
+    #!/usr/bin/env bash
+    set -e
+    cd "{{ _catalog_apptests_dir }}"
+    if [ ! -f go.mod ]; then
+        echo "catalog-apptests/go.mod not found."
+        exit 1
+    fi
+    echo "Running catalog-apptests for app: {{ app }}"
+    go test . -v -timeout "{{ _apptests_timeout }}" -ginkgo.label-filter="appname={{ app }}"
+
+# Run catalog-apptests with a label filter (e.g. "install", "appname=podinfo && upgrade")
+# Usage: just apptests-templated-label "install"
+apptests-templated-label label_filter:
+    #!/usr/bin/env bash
+    set -e
+    cd "{{ _catalog_apptests_dir }}"
+    if [ ! -f go.mod ]; then
+        echo "catalog-apptests/go.mod not found."
+        exit 1
+    fi
+    echo "Running catalog-apptests with label filter: {{ label_filter }}"
+    go test . -v -timeout "{{ _apptests_timeout }}" -ginkgo.label-filter='{{ label_filter }}'
 
 # Ensure apptests dependencies are tidy
 apptests-tidy:

@@ -1,0 +1,13 @@
+schema: "catalog.nkp.nutanix.com/v1/application-metadata"
+displayName: OpenCost
+description: OpenCost provides cost monitoring and resource optimization for Kubernetes workloads.
+category:
+  - monitoring
+dependencies: []
+scope:
+  - workspace
+certifications:
+  - qualified
+licensing:
+  - Apache-2.0
+supportLink: https://opencost.io/docs/
