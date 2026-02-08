@@ -6,89 +6,72 @@ This package runs **table-driven** tests: one common template (install, upgrade,
 
 High-level objects: **Cluster** uses **Network** and **Catalog**, has a **Role**, and installs **App**s (Flux or catalog apps) by type. **ClusterConfig** binds Network + Catalog + Name when creating a cluster.
 
-> **Mermaid in preview:** GitHub renders Mermaid in this README automatically. In Cursor/VS Code, install the [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension, then use **Markdown: Open Preview** (or the preview pane) to see the diagram.
+> **Rendering:** GitHub renders Mermaid in this file when you view it on github.com. If you only see code, ensure the latest commit is pushed. In editors, use the [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension (Cursor/VS Code).
 
 ```mermaid
 classDiagram
     direction TB
-
     class Network {
         +ID string
         +Name string
     }
-    note for Network "framework.Network\nDocker network"
-
     class Catalog {
         <<interface>>
-        +Apps() ([]AppVersions, error)
-        +Each(f) error
-        +PathToApp(name, version) (string, error)
-        +PrevVersionPath(name) (string, error)
+        +Apps()
+        +Each()
+        +PathToApp()
+        +PrevVersionPath()
     }
-    note for Catalog "dm-nkp-gitops-app-catalog\napplications/ discovery"
-
     class Cluster {
         <<interface>>
-        +Ctx() context.Context
-        +Client() Client
-        +Catalog() Catalog
-        +Network() *Network
-        +Role() ClusterRole
-        +Install(app) error
-        +ApplyKustomizations(...) error
+        +Ctx()
+        +Client()
+        +Catalog()
+        +Network()
+        +Role()
+        +Install()
         +Destroy()
     }
-
     class NKPManagementCluster {
         <<interface>>
-        +NetworkName() string
-        +InstallCentralizedOpencost() error
+        +NetworkName()
+        +InstallCentralizedOpencost()
     }
-
     class NKPWorkloadCluster {
         <<interface>>
-        +InstallOpencost() error
+        +InstallOpencost()
     }
-
     class ClusterConfig {
-        +Network *Network
-        +Catalog Catalog
-        +Name string
+        +Network
+        +Catalog
+        +Name
     }
-
     class ClusterRole {
         <<enumeration>>
         management
         workload
         standalone
     }
-
     class App {
         <<interface>>
-        +InstallOn(Cluster) error
+        +InstallOn()
     }
-
-    class FluxApp {
-        +InstallOn(Cluster) error
-    }
-
+    class FluxApp
     class CatalogApp {
-        +AppName string
-        +VersionToInstall string
-        +Name() string
-        +Install(Cluster) error
-        +InstallPreviousVersion(Cluster) error
-        +Upgrade(Cluster) error
+        +AppName
+        +VersionToInstall
+        +Name()
+        +Install()
+        +Upgrade()
     }
-
     Cluster <|-- NKPManagementCluster
     Cluster <|-- NKPWorkloadCluster
-    Cluster "1" --> "0..1" Catalog : uses
-    Cluster "1" --> "0..1" Network : uses
-    Cluster "1" --> "1" ClusterRole : has
+    Cluster --> Catalog : uses
+    Cluster --> Network : uses
+    Cluster --> ClusterRole : has
     ClusterConfig ..> Cluster : creates
-    ClusterConfig *-- "0..1" Catalog
-    ClusterConfig *-- "0..1" Network
+    ClusterConfig *-- Catalog
+    ClusterConfig *-- Network
     App <|-- FluxApp
     App <|-- CatalogApp
     Cluster ..> App : installs
