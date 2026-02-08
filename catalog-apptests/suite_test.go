@@ -59,7 +59,11 @@ func assertHelmReleaseReady(cluster Cluster, name, namespace string, expectUpgra
 }
 
 var _ = Describe("Catalog applications (install/upgrade)", Ordered, Label("templated"), func() {
-	apps, err := ListCatalogApps()
+	catalog, err := DefaultCatalog()
+	if err != nil {
+		Fail("discovery failed: " + err.Error())
+	}
+	apps, err := catalog.Apps()
 	if err != nil {
 		Fail("discovery failed: " + err.Error())
 	}
@@ -71,7 +75,7 @@ var _ = Describe("Catalog applications (install/upgrade)", Ordered, Label("templ
 
 			BeforeEach(OncePerOrdered, func() {
 				var err error
-				cluster, err = KindCluster.Create(suiteCtx, suiteNetwork, "default")
+				cluster, err = KindCluster.Create(suiteCtx, ClusterConfig{Network: suiteNetwork, Catalog: catalog, Name: "default"})
 				Expect(err).ToNot(HaveOccurred())
 				Expect(cluster.Install(FluxApp)).ToNot(HaveOccurred())
 			})
@@ -84,7 +88,7 @@ var _ = Describe("Catalog applications (install/upgrade)", Ordered, Label("templ
 
 			Describe("Installing "+app.Name, Ordered, Label("install"), func() {
 				It("should install successfully with default config", func() {
-					catalogApp := &CatalogApp{AppName: app.Name, VersionToInstall: ""}
+					catalogApp := NewCatalogApp(app.Name, "")
 					Expect(cluster.Install(catalogApp)).ToNot(HaveOccurred())
 					assertHelmReleaseReady(cluster, catalogApp.Name(), DefaultNamespace, false)
 				})
@@ -94,13 +98,13 @@ var _ = Describe("Catalog applications (install/upgrade)", Ordered, Label("templ
 				Describe("Upgrading "+app.Name, Ordered, Label("upgrade"), func() {
 					var cat *CatalogApp
 					It("should install the previous version successfully", func() {
-						cat = &CatalogApp{AppName: app.Name}
+						cat = NewCatalogApp(app.Name, "")
 						Expect(cat.InstallPreviousVersion(cluster)).ToNot(HaveOccurred())
 						assertHelmReleaseReady(cluster, cat.Name(), DefaultNamespace, false)
 					})
 					It("should upgrade successfully", func() {
 						if cat == nil {
-							cat = &CatalogApp{AppName: app.Name}
+							cat = NewCatalogApp(app.Name, "")
 						}
 						Expect(cat.Upgrade(cluster)).ToNot(HaveOccurred())
 						assertHelmReleaseReady(cluster, cat.Name(), DefaultNamespace, true)
@@ -112,7 +116,11 @@ var _ = Describe("Catalog applications (install/upgrade)", Ordered, Label("templ
 })
 
 var _ = Describe("Catalog applications (multicluster — OpenCost)", Ordered, Label("templated", "multicluster"), func() {
-	apps, err := ListCatalogApps()
+	catalog, err := DefaultCatalog()
+	if err != nil {
+		Fail("discovery failed: " + err.Error())
+	}
+	apps, err := catalog.Apps()
 	if err != nil {
 		Fail("discovery failed: " + err.Error())
 	}
@@ -133,7 +141,7 @@ var _ = Describe("Catalog applications (multicluster — OpenCost)", Ordered, La
 	BeforeEach(OncePerOrdered, func() {
 		var err error
 		var c Cluster
-		c, err = KindCluster.Create(suiteCtx, suiteNetwork, "mgmt")
+		c, err = KindCluster.Create(suiteCtx, ClusterConfig{Network: suiteNetwork, Catalog: catalog, Name: "mgmt"})
 		Expect(err).ToNot(HaveOccurred())
 		mgmt = c.(NKPManagementCluster)
 		workload1, err = KindCluster.CreateFromParent(suiteCtx, mgmt, "workload1")

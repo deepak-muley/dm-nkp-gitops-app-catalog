@@ -47,9 +47,9 @@ nodes:
 
 var kindCreateMu sync.Mutex
 
-// CreateClusterInNetwork creates a Kind cluster in the given Docker network.
+// NewKindClusterInNetwork creates a Kind cluster in the given Docker network.
 // It sets KIND_EXPERIMENTAL_DOCKER_NETWORK for the duration of create.
-func CreateClusterInNetwork(ctx context.Context, clusterName, networkName string) (*KindCluster, error) {
+func NewKindClusterInNetwork(ctx context.Context, clusterName, networkName string) (*KindCluster, error) {
 	kindCreateMu.Lock()
 	defer kindCreateMu.Unlock()
 
@@ -59,11 +59,11 @@ func CreateClusterInNetwork(ctx context.Context, clusterName, networkName string
 		return nil, fmt.Errorf("set KIND_EXPERIMENTAL_DOCKER_NETWORK: %w", err)
 	}
 
-	return CreateCluster(ctx, clusterName)
+	return NewKindCluster(ctx, clusterName)
 }
 
-// CreateCluster creates a Kind cluster (uses default network if not set via env).
-func CreateCluster(ctx context.Context, name string) (*KindCluster, error) {
+// NewKindCluster creates a Kind cluster (uses default network if not set via env).
+func NewKindCluster(ctx context.Context, name string) (*KindCluster, error) {
 	if name == "" {
 		name = "catalog-test"
 	}

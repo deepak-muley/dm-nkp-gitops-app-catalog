@@ -1,27 +1,44 @@
 package catalogapptests
 
+// High-level object model:
+//   - Network (framework.Network): Docker network clusters are created on.
+//   - Catalog: dm-nkp-gitops-app-catalog (applications/ discovery); used by Cluster to resolve and install catalog apps.
+//   - Cluster: uses Network and Catalog; has a Role (management | workload | standalone). Install behavior is per role:
+//     NKPManagementCluster (role=management): InstallCentralizedOpencost, CreateFromParent for workloads.
+//     NKPWorkloadCluster (role=workload): InstallOpencost.
+//   - App: installable unit (FluxApp, CatalogApp); Cluster.Install(app) dispatches by type.
+// ClusterConfig binds Network + optional Catalog + Name when creating a cluster.
+
 import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/deepak-muley/dm-nkp-gitops-app-catalog/catalog-apptests/framework"
 	ctrlClient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-// App is something that can be installed on a cluster (e.g. Flux or a catalog app).
-type App interface {
-	InstallOn(c Cluster) error
-}
-
-// Cluster is a cluster you can install apps on and run assertions against.
+// Cluster is a cluster that uses a Network and optionally a Catalog, and installs apps by Role.
+// Role determines which catalog apps are appropriate (e.g. InstallCentralizedOpencost on management, InstallOpencost on workload).
 type Cluster interface {
 	Ctx() context.Context
 	Client() ctrlClient.Client
-	Install(app App) error
+	Catalog() Catalog
+	Network() *framework.Network
+	// Role is the NKP cluster role (management, workload, standalone); install behavior is per role.
+	Role() ClusterRole
+	Install(app interface{}) error
 	ApplyKustomizations(ctx context.Context, path string, substitutions map[string]string) error
 	Destroy()
+}
+
+// ClusterConfig configures a new cluster: it uses the given Network and optional Catalog.
+type ClusterConfig struct {
+	Network *framework.Network
+	Catalog Catalog // optional; nil => DefaultCatalog() used when installing catalog apps
+	Name    string
 }
 
 // NKPManagementCluster is a management cluster that can have workload clusters created from it.
@@ -66,15 +83,16 @@ type kindCluster struct {
 type defaultKindCreator struct{}
 
 func (defaultKindCreator) CreateCluster(ctx context.Context, networkName, name string) (ClusterHandle, error) {
-	return framework.CreateClusterInNetwork(ctx, name, networkName)
+	return framework.NewKindClusterInNetwork(ctx, name, networkName)
 }
 
-// Create creates one cluster on the given network. Use it for mgmt or a standalone cluster.
+// Create creates one cluster from config (uses config.Network and config.Catalog). Use for mgmt or standalone.
 // The cluster can be used as a parent: pass it to CreateFromParent(ctx, cluster, "workload1"), etc.
-func (k *kindCluster) Create(ctx context.Context, network *framework.Network, name string) (Cluster, error) {
+func (k *kindCluster) Create(ctx context.Context, config ClusterConfig) (Cluster, error) {
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	name := config.Name
 	if name == "" {
 		name = "default"
 	}
@@ -83,13 +101,13 @@ func (k *kindCluster) Create(ctx context.Context, network *framework.Network, na
 	}
 
 	networkName := "kind"
-	if network != nil {
-		networkName = network.Name
+	if config.Network != nil {
+		networkName = config.Network.Name
 	}
 
 	var handle ClusterHandle
 	var err error
-	if network != nil && network.Name != "" && network.Name != "kind" {
+	if config.Network != nil && config.Network.Name != "" && config.Network.Name != "kind" {
 		handle, err = k.creator.CreateCluster(ctx, networkName, name)
 	} else {
 		handle, err = k.createStandalone(ctx, name)
@@ -104,12 +122,19 @@ func (k *kindCluster) Create(ctx context.Context, network *framework.Network, na
 		return nil, err
 	}
 
+	role := ClusterRoleStandalone
+	if config.Network != nil && config.Network.Name != "" && config.Network.Name != "kind" {
+		role = ClusterRoleManagement
+	}
 	c := &clusterImpl{
 		name:        name,
 		ctx:         ctx,
 		handle:      handle,
 		client:      client,
+		catalog:     config.Catalog,
+		network:     config.Network,
 		networkName: networkName,
+		role:        role,
 		children:    make(map[string]*clusterImpl),
 		destroy:     func() { _ = handle.Delete(ctx) },
 	}
@@ -117,7 +142,7 @@ func (k *kindCluster) Create(ctx context.Context, network *framework.Network, na
 }
 
 func (k *kindCluster) createStandalone(ctx context.Context, name string) (ClusterHandle, error) {
-	return framework.CreateCluster(ctx, name)
+	return framework.NewKindCluster(ctx, name)
 }
 
 // CreateFromParent creates a new workload cluster on the same network as the management cluster.
@@ -152,12 +177,17 @@ func (k *kindCluster) CreateFromParent(ctx context.Context, mgmt NKPManagementCl
 		return nil, err
 	}
 
+	parentCatalog := pi.Catalog()
 	child := &clusterImpl{
-		name:    workloadName,
-		ctx:     ctx,
-		handle:  handle,
-		client:  workloadClient,
-		destroy: func() { _ = handle.Delete(ctx) },
+		name:        workloadName,
+		ctx:         ctx,
+		handle:      handle,
+		client:      workloadClient,
+		catalog:     parentCatalog,
+		network:     pi.network,
+		networkName: pi.networkName,
+		role:        ClusterRoleWorkload,
+		destroy:     func() { _ = handle.Delete(ctx) },
 	}
 
 	pi.mu.Lock()
@@ -184,37 +214,60 @@ type clusterImpl struct {
 	ctx         context.Context
 	handle      ClusterHandle
 	client      ctrlClient.Client
-	isWorkload  bool
+	catalog     Catalog
+	network     *framework.Network
 	networkName string
+	role        ClusterRole
 	children    map[string]*clusterImpl
 	mu          sync.Mutex
 	destroy     func()
 }
 
-func (c *clusterImpl) Ctx() context.Context                 { return c.ctx }
-func (c *clusterImpl) Client() ctrlClient.Client            { return c.client }
-func (c *clusterImpl) Destroy()                             { if c.destroy != nil { c.destroy() } }
-func (c *clusterImpl) Install(app App) error                 { return app.InstallOn(c) }
+func (c *clusterImpl) Ctx() context.Context      { return c.ctx }
+func (c *clusterImpl) Client() ctrlClient.Client { return c.client }
+func (c *clusterImpl) Catalog() Catalog             { return c.catalog }
+func (c *clusterImpl) Network() *framework.Network { return c.network }
+func (c *clusterImpl) Role() ClusterRole           { return c.role }
+func (c *clusterImpl) Destroy()                    { if c.destroy != nil { c.destroy() } }
+
+func (c *clusterImpl) Install(app interface{}) error {
+	switch a := app.(type) {
+	case App:
+		return a.InstallOn(c)
+	case *CatalogApp:
+		return c.installCatalogApp(a)
+	default:
+		return fmt.Errorf("unsupported app type: %T", app)
+	}
+}
+
+func (c *clusterImpl) installCatalogApp(app *CatalogApp) error {
+	cat := c.catalog
+	if cat == nil {
+		var err error
+		cat, err = DefaultCatalog()
+		if err != nil {
+			return err
+		}
+	}
+	appPath, err := cat.PathToApp(app.AppName, app.VersionToInstall)
+	if err != nil {
+		return err
+	}
+	helmreleasePath := filepath.Join(appPath, "helmrelease")
+	return c.ApplyKustomizations(c.ctx, helmreleasePath, map[string]string{
+		"releaseNamespace": DefaultNamespace,
+		"releaseName":      app.AppName,
+	})
+}
+
 func (c *clusterImpl) NetworkName() string                  { return c.networkName }
-func (c *clusterImpl) InstallCentralizedOpencost() error    { return c.Install(&CatalogApp{AppName: MulticlusterCentralAppName, VersionToInstall: ""}) }
-func (c *clusterImpl) InstallOpencost() error                { return c.Install(&CatalogApp{AppName: MulticlusterTestAppName, VersionToInstall: ""}) }
+func (c *clusterImpl) InstallCentralizedOpencost() error { return c.Install(NewCatalogApp(MulticlusterCentralAppName, "")) }
+func (c *clusterImpl) InstallOpencost() error            { return c.Install(NewCatalogApp(MulticlusterTestAppName, "")) }
 func (c *clusterImpl) ApplyKustomizations(ctx context.Context, path string, substitutions map[string]string) error {
 	return framework.ApplyKustomizations(ctx, c.client, path, substitutions)
 }
 
 func (c *clusterImpl) installFlux(ctx context.Context) error {
 	return framework.InstallFlux(ctx, c.handle.KubeconfigFilePath(), "")
-}
-
-// FluxApp installs Flux (source, kustomize, helm controllers) on a cluster.
-var FluxApp App = fluxApp{}
-
-type fluxApp struct{}
-
-func (fluxApp) InstallOn(cluster Cluster) error {
-	impl, ok := cluster.(*clusterImpl)
-	if !ok {
-		return fmt.Errorf("FluxApp requires cluster from KindCluster")
-	}
-	return impl.installFlux(impl.ctx)
 }

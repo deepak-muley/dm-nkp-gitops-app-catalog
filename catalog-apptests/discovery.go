@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"sync"
 )
 
 // AppVersions holds an app name and its version directories (sorted, oldest first).
@@ -13,9 +14,36 @@ type AppVersions struct {
 	Versions []string // e.g. ["6.9.3", "6.9.4"]
 }
 
-// applicationsBase returns the absolute path to the applications/ directory.
-// Repo root is inferred from cwd (e.g. catalog-apptests/ or repo root when running go test).
-func applicationsBase() (string, error) {
+// Catalog provides discovery and iteration over applications/<name>/<version>/.
+// Use NewCatalog() to create one; path resolution uses the applications/ base directory.
+type Catalog interface {
+	// Apps returns all catalog apps and their versions (sorted by name; versions oldest first).
+	Apps() ([]AppVersions, error)
+	// Each calls f for each app; stops on first error and returns it.
+	Each(f func(AppVersions) error) error
+	// PathToApp returns the absolute path to applications/<app>/<version>. Empty version = latest.
+	PathToApp(appName, version string) (string, error)
+	// PrevVersionPath returns the path to the second-to-latest version (for upgrade tests).
+	PrevVersionPath(appName string) (string, error)
+}
+
+var _ Catalog = (*catalog)(nil)
+
+type catalog struct {
+	basePath string
+}
+
+// NewCatalog discovers the applications/ directory from cwd (repo root or catalog-apptests/)
+// and returns a Catalog. Use it for listing and path resolution; prefer one instance per test run.
+func NewCatalog() (Catalog, error) {
+	base, err := resolveApplicationsBase()
+	if err != nil {
+		return nil, err
+	}
+	return &catalog{basePath: base}, nil
+}
+
+func resolveApplicationsBase() (string, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return "", err
@@ -39,15 +67,8 @@ func isVersionDir(path string) bool {
 	return false
 }
 
-// ListCatalogApps returns all catalog apps and their versions by scanning
-// applications/<name>/<version>/ directories. Only names that have at least
-// one version directory are returned. Versions are sorted (oldest first).
-func ListCatalogApps() ([]AppVersions, error) {
-	appsDir, err := applicationsBase()
-	if err != nil {
-		return nil, err
-	}
-	entries, err := os.ReadDir(appsDir)
+func (c *catalog) Apps() ([]AppVersions, error) {
+	entries, err := os.ReadDir(c.basePath)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +78,7 @@ func ListCatalogApps() ([]AppVersions, error) {
 			continue
 		}
 		name := e.Name()
-		appPath := filepath.Join(appsDir, name)
+		appPath := filepath.Join(c.basePath, name)
 		subs, err := os.ReadDir(appPath)
 		if err != nil {
 			continue
@@ -82,18 +103,26 @@ func ListCatalogApps() ([]AppVersions, error) {
 	return result, nil
 }
 
-// absolutePathToApp returns the absolute path to applications/<app>/<version>.
-// If version is empty, returns the latest version (last in sorted order).
-func absolutePathToApp(app, version string) (string, error) {
-	appsDir, err := applicationsBase()
+// Each implements Catalog: iterates over apps and calls f; stops on first error.
+func (c *catalog) Each(f func(AppVersions) error) error {
+	apps, err := c.Apps()
 	if err != nil {
-		return "", err
+		return err
 	}
-	dir := filepath.Join(appsDir, app)
+	for _, av := range apps {
+		if err := f(av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *catalog) PathToApp(appName, version string) (string, error) {
+	dir := filepath.Join(c.basePath, appName)
 	if version != "" {
 		p := filepath.Join(dir, version)
 		if _, err := os.Stat(p); err != nil {
-			return "", fmt.Errorf("no application directory found for app: %s version: %s", app, version)
+			return "", fmt.Errorf("no application directory found for app: %s version: %s", appName, version)
 		}
 		return p, nil
 	}
@@ -109,18 +138,13 @@ func absolutePathToApp(app, version string) (string, error) {
 	}
 	sort.Strings(versionDirs)
 	if len(versionDirs) == 0 {
-		return "", fmt.Errorf("no application directory found for %s in %s", app, dir)
+		return "", fmt.Errorf("no application directory found for %s in %s", appName, dir)
 	}
 	return versionDirs[len(versionDirs)-1], nil
 }
 
-// getPrevVersionPath returns the path to the second-to-latest version of the app (for upgrade tests).
-func getPrevVersionPath(app string) (string, error) {
-	appsDir, err := applicationsBase()
-	if err != nil {
-		return "", err
-	}
-	dir := filepath.Join(appsDir, app)
+func (c *catalog) PrevVersionPath(appName string) (string, error) {
+	dir := filepath.Join(c.basePath, appName)
 	matches, err := filepath.Glob(filepath.Join(dir, "*"))
 	if err != nil {
 		return "", err
@@ -133,7 +157,32 @@ func getPrevVersionPath(app string) (string, error) {
 	}
 	sort.Strings(versionDirs)
 	if len(versionDirs) < 2 {
-		return "", fmt.Errorf("no old version found for application: %s", app)
+		return "", fmt.Errorf("no old version found for application: %s", appName)
 	}
 	return versionDirs[len(versionDirs)-2], nil
+}
+
+// default catalog for package-level helpers (lazy init)
+var (
+	defaultCatalog    Catalog
+	defaultCatalogMu  sync.Once
+	defaultCatalogErr error
+)
+
+// DefaultCatalog returns a lazily-initialized Catalog (applications/ from cwd).
+// Used by ListCatalogApps, absolutePathToApp, getPrevVersionPath for backward compatibility.
+func DefaultCatalog() (Catalog, error) {
+	defaultCatalogMu.Do(func() {
+		defaultCatalog, defaultCatalogErr = NewCatalog()
+	})
+	return defaultCatalog, defaultCatalogErr
+}
+
+// ListCatalogApps returns all catalog apps and their versions (uses DefaultCatalog).
+func ListCatalogApps() ([]AppVersions, error) {
+	cat, err := DefaultCatalog()
+	if err != nil {
+		return nil, err
+	}
+	return cat.Apps()
 }
