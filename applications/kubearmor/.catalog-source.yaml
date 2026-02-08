@@ -1,0 +1,4 @@
+# Source for check-versions: chart is pulled from this Helm repo, then pushed to OCI.
+helmrepo: kubearmor/kubearmor-operator
+helmrepoUrl: https://kubearmor.github.io/charts
+ocipush: oci://ghcr.io/deepak-muley/kubearmor

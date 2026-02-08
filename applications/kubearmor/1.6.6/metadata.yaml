@@ -1,0 +1,33 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+displayName: KubeArmor
+allowMultipleInstances: false
+category:
+  - dm-nkp-gitops-app-catalog
+  - security
+  - policy
+  - runtime
+description: |
+  KubeArmor is a cloud-native runtime security enforcement system that restricts
+  the behavior of pods, containers, and nodes at the system level. It enforces
+  policies on process execution, file access, and networking using LSMs (AppArmor,
+  SELinux, BPF-LSM) and eBPF, with rich alerts and telemetry.
+dependencies: []
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — KubeArmor provides runtime protection for Kubernetes workloads by enforcing security policies at the system level (process, file, network) and generating telemetry for visibility and response.
+
+  **Highlights**
+  - Policy enforcement via KubeArmorPolicy (workload) and KubeArmorHostPolicy (node/VM); block or audit actions
+  - Uses LSMs (AppArmor, SELinux, BPF-LSM) and eBPF; no sidecar required
+  - kArmor CLI and relay for logs/alerts; integrate with SIEM
+  - Zero-trust least-permissive policies; protect service account tokens, block package managers, audit path access
+
+  **Documentation:** [KubeArmor docs](https://docs.kubearmor.io/) | **Deep dive:** [Protecting Kubernetes workloads at runtime (Medium)](https://medium.com/@deepak.muley/protecting-kubernetes-workloads-at-runtime-a-deep-dive-into-kubearmor-00e8388fd9df) | **Project:** [GitHub](https://github.com/kubearmor/KubeArmor)
+scope:
+  - workspace
+  - project
+supportLink: https://docs.kubearmor.io/
+type: custom
