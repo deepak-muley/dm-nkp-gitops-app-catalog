@@ -1,0 +1,15 @@
+---
+description: Never add Cursor as co-author on git commits in this project
+globs: "**"
+alwaysApply: true
+---
+
+# No Cursor Co-Author on Commits
+
+In this project, **never** add Cursor as co-author to git commits.
+
+- Do **not** use `--trailer "Co-authored-by: Cursor <...>"` or any Co-authored-by trailer for Cursor when running `git commit`.
+- When committing or suggesting commit commands, use plain `git commit -m "message"` with no co-author trailer.
+- If the environment injects a co-author trailer automatically, prefer instructing the user to run the commit in a terminal where that injection does not occur, or to disable the "Add Cursor as co-author" option in Cursor Settings (search for "co-author" or "Co-authored").
+
+This reflects the project owner's preference: Cursor must not be listed as co-author on commits in this repository.
