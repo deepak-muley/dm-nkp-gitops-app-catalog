@@ -87,6 +87,7 @@ These charts are on Helm repos. Use `--helmrepo` and `--ocipush` so the script p
 | kyverno | 3.6.1 | `./catalog-workflow.sh add-app --appname kyverno --version 3.6.1 --helmrepo kyverno/kyverno --ocipush oci://ghcr.io/deepak-muley/kyverno --helmrepo-url https://kyverno.github.io/kyverno/` |
 | vault | 0.31.0 | `./catalog-workflow.sh add-app --appname vault --version 0.31.0 --helmrepo hashicorp/vault --ocipush oci://ghcr.io/deepak-muley/vault --helmrepo-url https://helm.releases.hashicorp.com` |
 | karmada-operator | 1.16.0 | `./catalog-workflow.sh add-app --appname karmada-operator --version 1.16.0 --helmrepo karmada-charts/karmada-operator --ocipush oci://ghcr.io/deepak-muley/karmada-operator --helmrepo-url https://raw.githubusercontent.com/karmada-io/karmada/master/charts` |
+| vllm | 0.1.1 | `./catalog-workflow.sh add-app --appname vllm --version 0.1.1 --helmrepo vllm/vllm --ocipush oci://ghcr.io/deepak-muley/vllm --helmrepo-url https://open-source-ai-dev.github.io/vllm-helm-chart` |
 
 **Note:** If the Helm repo is already added (`helm repo add` + `helm repo update`), you can omit `--helmrepo-url`.
 

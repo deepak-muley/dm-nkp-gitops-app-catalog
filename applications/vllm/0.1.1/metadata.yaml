@@ -1,0 +1,16 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+  - artificial-intelligence
+  - ai-ml
+description: vLLM is a high-throughput, memory-efficient inference and serving engine for large language models (LLMs), offering an OpenAI-compatible API for chat completions, embeddings, and more.
+displayName: vLLM
+icon: https://raw.githubusercontent.com/vllm-project/media-kit/main/vLLM-Logo.svg
+licensing:
+  - Pro
+  - Ultimate
+overview: Deploy open-source LLMs with an OpenAI-compatible API on Kubernetes. Supports models like Llama, Mistral, and others with high throughput and low latency.
+scope:
+  - project
+supportLink: https://docs.vllm.ai/
+---

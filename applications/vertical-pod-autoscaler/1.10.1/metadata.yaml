@@ -4,7 +4,7 @@ category:
 - general
 description: Automatically set resource requests and limits for pods based on usage.
 displayName: Vertical Pod Autoscaler
-icon: ""
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
 licensing:
 - Pro
 - Ultimate

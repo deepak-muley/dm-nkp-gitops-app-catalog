@@ -10,7 +10,7 @@ description: |
   It supports issuing certificates from a variety of sources including Let's Encrypt (ACME),
   HashiCorp Vault, Venafi, and simple signing key pairs.
 displayName: Cert Manager
-icon: ""
+icon: https://raw.githubusercontent.com/cert-manager/community/main/logo/logo.svg
 licensing:
 - Pro
 - Ultimate

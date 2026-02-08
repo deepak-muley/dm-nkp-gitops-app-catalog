@@ -9,5 +9,7 @@ scope:
 certifications:
   - qualified
 licensing:
-  - Apache-2.0
+  - Pro
+  - Ultimate
+icon: https://raw.githubusercontent.com/opencost/opencost-website/main/static/img/logo.png
 supportLink: https://opencost.io/docs/

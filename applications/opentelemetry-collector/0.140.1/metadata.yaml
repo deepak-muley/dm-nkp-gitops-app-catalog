@@ -9,7 +9,7 @@ description: |
   the OpenTelemetry observability framework and serves as a central collection point 
   for all telemetry signals from applications like dm-nkp-gitops-custom-app.
 displayName: OpenTelemetry Collector
-icon: ""
+icon: https://raw.githubusercontent.com/open-telemetry/opentelemetry.io/main/static/img/logo.svg
 licensing:
 - Pro
 - Ultimate

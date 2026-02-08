@@ -9,7 +9,7 @@ description: |
   to operate. Loki 3.0+ supports native OTLP ingestion for logs from OpenTelemetry 
   Collector.
 displayName: Loki
-icon: ""
+icon: https://raw.githubusercontent.com/grafana/loki/main/docs/logo_and_name.png
 licensing:
 - Pro
 - Ultimate

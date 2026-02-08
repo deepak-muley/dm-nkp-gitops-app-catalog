@@ -10,7 +10,7 @@ description: |
   configures itself automatically and dynamically. Traefik supports multiple backends
   and includes automatic HTTPS via Let's Encrypt integration.
 displayName: Traefik
-icon: ""
+icon: https://raw.githubusercontent.com/traefik/traefik/master/webui/public/favicon-32x32.png
 licensing:
 - Pro
 - Ultimate

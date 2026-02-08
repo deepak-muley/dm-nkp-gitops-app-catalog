@@ -9,7 +9,7 @@ description: |
   integrated with Grafana, Prometheus, and Loki. It supports OTLP, Jaeger, and Zipkin 
   trace formats.
 displayName: Tempo
-icon: ""
+icon: https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg
 licensing:
 - Pro
 - Ultimate
