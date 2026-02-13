@@ -19,7 +19,6 @@ This is an NKP (Nutanix Kubernetes Platform) custom app catalog repository. It c
 ## Application Patterns
 
 1. **Helm-based** (most apps): OCIRepository + HelmRelease in helmrelease/. Use catalog-workflow.sh add-app.
-2. **Job-based** (kagent): Flux Kustomization + Job that runs install. Manual creation only when no OCI Helm chart exists.
 
 ## Key Paths
 

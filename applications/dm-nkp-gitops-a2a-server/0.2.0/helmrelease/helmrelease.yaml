@@ -26,9 +26,6 @@ spec:
     # Wait for traefik gateway to be ready (for HTTPRoute)
     - name: traefik
       namespace: traefik-system
-    # Wait for Kagent operator to be ready (for MCPServer CRD mode)
-    - name: kagent
-      namespace: kagent-system
   install:
     crds: CreateReplace
     createNamespace: true

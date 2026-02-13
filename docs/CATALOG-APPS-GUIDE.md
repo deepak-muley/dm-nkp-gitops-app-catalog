@@ -9,7 +9,7 @@ For add-app commands and versions, see [ADD-APPLICATION-COMMANDS.md](ADD-APPLICA
 ## Table of Contents
 
 ### AI / ML
-- [vLLM](#vllm) · [KServe](#kserve) · [KServe CRD](#kserve-crd) · [Open WebUI](#open-webui) · [LocalAI](#local-ai) · [Weaviate](#weaviate) · [Katib](#katib) · [Kubeflow Pipelines](#kubeflow-pipelines) · [Jupyter Notebook Controller](#jupyter-notebook-controller) · [Training Operator](#training-operator) · [Kubeflow Model Registry](#kubeflow-model-registry) · [TensorBoard Controller](#tensorboard-controller) · [Kubeflow Central Dashboard](#kubeflow-central-dashboard) · [Spark Operator](#spark-operator) · [Agentgateway](#agentgateway) · [Slurm / Slurm Operator](#slurm--slurm-operator)
+- [vLLM](#vllm) · [KServe](#kserve) · [KServe CRD](#kserve-crd) · [Open WebUI](#open-webui) · [LocalAI](#local-ai) · [Weaviate](#weaviate) · [Katib](#katib) · [Kubeflow Pipelines](#kubeflow-pipelines) · [Jupyter Notebook Controller](#jupyter-notebook-controller) · [Training Operator](#training-operator) · [Kubeflow Model Registry](#kubeflow-model-registry) · [TensorBoard Controller](#tensorboard-controller) · [Kubeflow Central Dashboard](#kubeflow-central-dashboard) · [Spark Operator](#spark-operator) · [Slurm / Slurm Operator](#slurm--slurm-operator)
 
 ### Observability & Cost
 - [Kube Prometheus Stack](#kube-prometheus-stack) · [Loki](#loki) · [Tempo](#tempo) · [OpenCost / Centralized OpenCost](#opencost--centralized-opencost) · [ClickStack](#clickstack) · [OpenTelemetry Collector](#opentelemetry-collector)
@@ -21,7 +21,7 @@ For add-app commands and versions, see [ADD-APPLICATION-COMMANDS.md](ADD-APPLICA
 - [Traefik](#traefik) · [KRO](#kro) · [Karmada Operator](#karmada-operator) · [Vertical Pod Autoscaler](#vertical-pod-autoscaler) · [Podinfo](#podinfo)
 
 ### Custom / Internal
-- [Kagent](#kagent) · [dm-nkp-gitops-custom-app](#dm-nkp-gitops-custom-app) · [dm-nkp-gitops-a2a-server](#dm-nkp-gitops-a2a-server)
+- [dm-nkp-gitops-custom-app](#dm-nkp-gitops-custom-app) · [dm-nkp-gitops-a2a-server](#dm-nkp-gitops-a2a-server)
 
 ---
 
@@ -223,20 +223,6 @@ For add-app commands and versions, see [ADD-APPLICATION-COMMANDS.md](ADD-APPLICA
 | **How to use** | Deploy from catalog. Create `SparkApplication` CRs; monitor via kubectl or Spark driver UI. |
 
 **References:** [Spark on K8s](https://spark.apache.org/docs/latest/running-on-kubernetes.html) · [KUBEFLOW-CATALOG.md](KUBEFLOW-CATALOG.md)
-
----
-
-### Agentgateway
-
-| | |
-|---|---|
-| **What it is** | AI-focused **gateway** (from kgateway.dev) for security, observability, and traffic management in front of LLM backends. |
-| **What it does** | Sits between AI agents and LLM providers (e.g. vLLM, OpenAI); adds policy enforcement, logging, and rate limiting. Works with kagent for agent governance. |
-| **UI / Dashboard** | Depends on kgateway.dev offering; check [kgateway.dev](https://kgateway.dev). |
-| **Prerequisites** | Kubernetes; Gateway API CRDs. |
-| **How to use** | Deploy in front of vLLM or other LLM APIs; route agent traffic through the gateway. |
-
-**References:** [kgateway.dev](https://kgateway.dev)
 
 ---
 
@@ -499,20 +485,6 @@ For add-app commands and versions, see [ADD-APPLICATION-COMMANDS.md](ADD-APPLICA
 ---
 
 ## Custom / Internal
-
-### Kagent
-
-| | |
-|---|---|
-| **What it is** | **Agent** component from kgateway.dev for AI agent governance. |
-| **What it does** | Works with Agentgateway to govern AI agent interactions with external LLMs. |
-| **UI / Dashboard** | See kgateway.dev. |
-| **Prerequisites** | Kubernetes. |
-| **How to use** | Job-based install; deploy per catalog structure. See [ADD-APPLICATION-COMMANDS.md](ADD-APPLICATION-COMMANDS.md). |
-
-**References:** [kgateway.dev](https://kgateway.dev)
-
----
 
 ### dm-nkp-gitops-custom-app
 

@@ -17,10 +17,9 @@ NKP custom app catalog for Nutanix Kubernetes Platform. Applications are Flux/Ku
 
 1. **Use catalog-workflow** — Always prefer `./catalog-workflow.sh add-app` when adding apps; use `validate` for validation.
 2. **No manual app creation** for standard OCI Helm chart apps — use `./catalog-workflow.sh add-app`.
-3. **Job-based apps** (e.g. kagent): No OCI Helm chart exists. Copy structure from `applications/kagent/0.1.0/` and adapt.
-4. **Do not check in** `.env.local`, `setup-credentials.sh`, or any secrets.
-5. **Chart versions** — Ensure OCI chart tag exists; validation will fail on invalid tags.
-6. **metadata.yaml** — Schema `catalog.nkp.nutanix.com/v1/application-metadata`; set `supportLink` to project URL (e.g. https://kgateway.dev).
+3. **Do not check in** `.env.local`, `setup-credentials.sh`, or any secrets.
+4. **Chart versions** — Ensure OCI chart tag exists; validation will fail on invalid tags.
+5. **metadata.yaml** — Schema `catalog.nkp.nutanix.com/v1/application-metadata`; set `supportLink` to project URL.
 
 ## Validation Notes
 

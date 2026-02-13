@@ -46,7 +46,7 @@ A custom app catalog for [Nutanix Kubernetes Platform (NKP)](https://www.nutanix
 | **Infrastructure** | cert-manager, traefik, letsencrypt-clusterissuer |
 | **Observability** | kube-prometheus-stack, loki, tempo, opentelemetry-operator |
 | **Security** | kyverno, kubescape-operator, vault, oauth2-proxy |
-| **Platform** | karmada-operator, kro, agentgateway |
+| **Platform** | karmada-operator, kro |
 
 Full list with add commands: [docs/ADD-APPLICATION-COMMANDS.md](docs/ADD-APPLICATION-COMMANDS.md)
 

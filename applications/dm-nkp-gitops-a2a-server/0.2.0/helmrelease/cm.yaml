@@ -10,9 +10,7 @@ data:
     # =============================================================================
     # Choose deployment mode:
     # - "deployment": Traditional Kubernetes Deployment (works everywhere)
-    # - "mcpserver": Kagent MCPServer CRD (K8s-native, requires Kagent operator)
-    # For production on NKP, use "mcpserver" mode (requires kagent dependency)
-    deploymentMode: "mcpserver"
+    deploymentMode: "deployment"
     
     # Replicas (set to 2+ for HA in production)
     replicaCount: 2
@@ -57,26 +55,6 @@ data:
       requests:
         cpu: 50m
         memory: 64Mi
-    
-    # =============================================================================
-    # MCPSERVER CRD CONFIGURATION (only used when deploymentMode: mcpserver)
-    # =============================================================================
-    # Requires Kagent operator to be installed first:
-    # kubectl apply -f https://github.com/kagent-dev/kagent/releases/latest/download/install.yaml
-    mcpServer:
-      a2a:
-        enabled: true
-      metrics:
-        enabled: true
-        port: 9090
-        path: /metrics
-      pdb:
-        enabled: false
-        minAvailable: 1
-      autoscaling:
-        enabled: false
-        minReplicas: 1
-        maxReplicas: 3
     
     # =============================================================================
     # NETWORK POLICY (Zero Trust)

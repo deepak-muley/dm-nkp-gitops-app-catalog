@@ -13,6 +13,5 @@ Alias/short reference for AI agents. For full instructions see `AGENTS.md` and `
 ## Rules
 
 1. Use existing scripts; do not manually create app dirs for Helm chart apps.
-2. For Job-based apps (like kagent), copy `applications/kagent/0.1.0/` structure.
-3. Never check in secrets (`.env.local`, etc.).
-4. Ensure OCI chart tag exists before validation.
+2. Never check in secrets (`.env.local`, etc.).
+3. Ensure OCI chart tag exists before validation.

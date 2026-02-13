@@ -29,9 +29,7 @@ NKP (Nutanix Kubernetes Platform) custom app catalog. Applications are Flux/Kust
 1. **Use existing scripts** — Prefer `add-application.sh`, `validate.sh`, `build-and-push.sh` over manual steps.
 2. **Do not check in secrets** — `.env.local`, `setup-credentials.sh` are gitignored.
 3. **Chart version** — OCI chart `ref.tag` must exist; validation fails otherwise.
-4. **Two app patterns**:
-   - **Helm-based** (default): OCIRepository + HelmRelease. Use `./catalog-workflow.sh add-app`.
-   - **Job-based** (kagent): Flux Kustomization + Job. Copy from `applications/kagent/0.1.0/`.
+4. **App pattern**: **Helm-based** (default): OCIRepository + HelmRelease. Use `./catalog-workflow.sh add-app`.
 5. **Catalog apptests** (`catalog-apptests/` at repo root): No per-app test code. Add app with `add-app`; discovery picks it up. Run with `./catalog-workflow.sh test --templated`. See `catalog-apptests/README.md`.
 
 ## Structure

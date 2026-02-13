@@ -71,13 +71,6 @@ Use **`--skip-validate`** when adding multiple apps so that full catalog validat
 |-----|---------|---------|
 | kro | 0.7.1 | `./catalog-workflow.sh add-app --appname kro --version 0.7.1 --ocirepo oci://registry.k8s.io/kro/charts/kro` |
 
-### AI / Infrastructure (from kgateway-dev)
-
-| App | Version | Command |
-|-----|---------|---------|
-| agentgateway | 2.1.2 | `./catalog-workflow.sh add-app --appname agentgateway --version 2.1.2 --ocirepo oci://ghcr.io/kgateway-dev/charts/agentgateway` |
-| | | *Note: Chart uses tag `v2.2.0-main`; update `ref.tag` in helmrelease if needed.* |
-
 ### AI / HPC — Slurm (Slinky, OCI)
 
 | App | Version | Command |
@@ -137,12 +130,6 @@ See [docs/KUBEFLOW-CATALOG.md](KUBEFLOW-CATALOG.md) for full Kubeflow context an
 
 ## Applications Not Using add-application.sh
 
-### Job-Based / Custom Install (manual structure)
-
-| App | Version | Notes |
-|-----|---------|-------|
-| **kagent** | 0.1.0 | Job-based install via `kubectl apply` of install.yaml. Copy structure from `applications/kagent/0.1.0/`. No OCI Helm chart. |
-
 ### Custom / GitOps Manifests (manual structure)
 
 | App | Version | Notes |
@@ -162,7 +149,6 @@ See [docs/KUBEFLOW-CATALOG.md](KUBEFLOW-CATALOG.md) for full Kubeflow context an
 
 1. **Validate**: `./validate.sh`
 2. **Update metadata.yaml**: categories, description, supportLink
-3. **For agentgateway**: Ensure `ref.tag` matches available chart tag (e.g. `v2.2.0-main`)
 
 ---
 
