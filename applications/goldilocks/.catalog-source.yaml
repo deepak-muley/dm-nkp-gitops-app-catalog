@@ -1,0 +1,5 @@
+# Source for check-versions: chart is pulled from Fairwinds Helm repo, then pushed to OCI.
+# New versions: https://artifacthub.io/packages/helm/fairwinds-stable/goldilocks
+helmrepo: fairwinds-stable/goldilocks
+helmrepoUrl: https://charts.fairwinds.com/stable
+ocipush: oci://ghcr.io/deepak-muley/goldilocks

@@ -23,13 +23,14 @@ fi
 TAG="$1"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# Use local nkp binary if present, otherwise expect it in PATH
-NKP_CMD="${REPO_DIR}/nkp"
-if [ ! -f "$NKP_CMD" ] || [ ! -x "$NKP_CMD" ]; then
+# Prefer nkp in PATH (often has push bundle); fall back to repo ./nkp
+if command -v nkp >/dev/null 2>&1; then
     NKP_CMD="nkp"
+else
+    NKP_CMD="${REPO_DIR}/nkp"
+    [ ! -x "$NKP_CMD" ] && { echo -e "${RED}Error: nkp not found in PATH and ${NKP_CMD} not executable${NC}"; exit 1; }
 fi
 
-BUNDLE_FILE="${REPO_DIR}/dm-nkp-gitops-app-catalog.tar"
 REGISTRY="oci://ghcr.io/deepak-muley/nkp-custom-apps-catalog"
 
 # Load .env.local if it exists
@@ -71,6 +72,15 @@ if [ $? -ne 0 ]; then
     echo -e "${RED}Bundle creation failed!${NC}"
     exit 1
 fi
+# nkp may write bundle with tag in filename
+if [ -f "${REPO_DIR}/dm-nkp-gitops-app-catalog-${TAG}.tar" ]; then
+    BUNDLE_FILE="${REPO_DIR}/dm-nkp-gitops-app-catalog-${TAG}.tar"
+elif [ -f "${REPO_DIR}/dm-nkp-gitops-app-catalog.tar" ]; then
+    BUNDLE_FILE="${REPO_DIR}/dm-nkp-gitops-app-catalog.tar"
+else
+    echo -e "${RED}Bundle file not found (expected dm-nkp-gitops-app-catalog[-${TAG}].tar)${NC}"
+    exit 1
+fi
 echo -e "${GREEN}✓ Bundle created: ${BUNDLE_FILE}${NC}"
 echo ""
 
@@ -84,18 +94,15 @@ fi
 echo -e "${GREEN}✓ Logged into ghcr.io${NC}"
 echo ""
 
-# Step 4: Push bundle to registry
+# Step 4: Push bundle to registry (nkp CLI only; bundle path is positional per NKP CLI)
 echo -e "${YELLOW}Step 4: Pushing bundle to registry...${NC}"
-"$NKP_CMD" push bundle \
-    --bundle "${BUNDLE_FILE}" \
-    --to-registry "${REGISTRY}" \
-    --to-registry-username "${GHCR_USERNAME}" \
-    --to-registry-password "${GHCR_PASSWORD}"
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Push failed!${NC}"
+if "$NKP_CMD" push bundle "${BUNDLE_FILE}" --to-registry "${REGISTRY}" \
+    --to-registry-username "${GHCR_USERNAME}" --to-registry-password "${GHCR_PASSWORD}"; then
+    echo -e "${GREEN}✓ Bundle pushed successfully${NC}"
+else
+    echo -e "${RED}Push failed. Ensure nkp in PATH supports 'push bundle' (bundle path positional, then --to-registry).${NC}"
     exit 1
 fi
-echo -e "${GREEN}✓ Bundle pushed successfully${NC}"
 echo ""
 
 # Step 5: Make package public (optional)

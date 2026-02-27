@@ -1,0 +1,30 @@
+schema: catalog.nkp.nutanix.com/v1/application-metadata
+allowMultipleInstances: true
+category:
+  - dm-nkp-gitops-app-catalog
+  - observability
+  - general
+description: |
+  Fairwinds Goldilocks helps you right-size your Kubernetes workloads by using
+  VPA (Vertical Pod Autoscaler) recommendations. It provides a controller and
+  dashboard to view resource recommendations and optionally update them.
+displayName: Goldilocks
+icon: ""
+licensing:
+  - Pro
+  - Ultimate
+overview: |
+  **What it is** — Goldilocks from Fairwinds surfaces VPA (Vertical Pod Autoscaler)
+  recommendations for Deployments, DaemonSets, and StatefulSets so you can
+  right-size CPU and memory requests and limits.
+
+  **Highlights**
+  - Controller that creates/updates VPA objects for workloads in labeled namespaces
+  - Dashboard to view container recommendations (port-forward or Ingress)
+  - Optional VPA subchart (recommender only); requires metrics-server
+
+  **Documentation:** [Installation & usage](https://goldilocks.docs.fairwinds.com/installation/) | **Source:** [FairwindsOps/goldilocks](https://github.com/FairwindsOps/goldilocks)
+scope:
+  - project
+supportLink: https://goldilocks.docs.fairwinds.com/installation/
+---

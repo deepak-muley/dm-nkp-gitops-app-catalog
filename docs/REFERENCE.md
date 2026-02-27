@@ -43,11 +43,15 @@ nkp create catalog-bundle --collection-tag v0.1.0
 
 ### 4. Push Bundle to OCI
 
+Use the NKP CLI (bundle path is positional):
+
 ```bash
-nkp push bundle --bundle ./dm-nkp-gitops-app-catalog.tar \
+nkp push bundle ./dm-nkp-gitops-app-catalog-<tag>.tar \
   --to-registry oci://ghcr.io/<org>/nkp-custom-apps-catalog \
   --to-registry-username <user> --to-registry-password <token>
 ```
+
+Or use `./push-bundle.sh <tag>` after `source .env.local`.
 
 ### 5. Import in NKP
 
