@@ -1,0 +1,6 @@
+# Ensure namespace exists before RBAC (Role in goldilocks ns) and HelmRelease.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: goldilocks
+---

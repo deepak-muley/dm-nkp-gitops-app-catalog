@@ -1,0 +1,15 @@
+# NKP Launch: post-install Job patches `dashboardLink` from goldilocks-dashboard LoadBalancer.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: goldilocks-ui
+  namespace: ${workspaceNamespace}
+  labels:
+    kommander.d2iq.io/application: goldilocks
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: Merge
+data:
+  name: goldilocks
+  docsLink: "https://goldilocks.docs.fairwinds.com/"
+  version: "10.2.0"
+---

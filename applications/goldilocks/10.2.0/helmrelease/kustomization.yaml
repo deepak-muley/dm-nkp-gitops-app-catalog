@@ -1,6 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- cm.yaml
-- helmrelease.yaml
+  - namespace.yaml
+  - cm.yaml
+  - helmrelease.yaml
+  - goldilocks-ui-dashboard-cm.yaml
+  - goldilocks-postinstall-rbac.yaml
+  - goldilocks-postinstall-job.yaml
 ---
